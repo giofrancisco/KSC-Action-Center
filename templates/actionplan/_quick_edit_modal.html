@@ -1,0 +1,188 @@
+<div
+    class="modal fade"
+    id="problemQuickEditModal"
+    tabindex="-1"
+    aria-labelledby="problemQuickEditModalLabel"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content problem-edit-modal">
+
+            <form
+                id="problemQuickEditForm"
+                method="post"
+                action=""
+            >
+                {% csrf_token %}
+
+                <input
+                    type="hidden"
+                    name="next"
+                    value="{{ request.get_full_path }}"
+                >
+
+                <div class="modal-header">
+
+                    <div>
+                        <div class="text-info text-uppercase small fw-bold">
+                            Atividade
+                        </div>
+
+                        <h2
+                            class="modal-title h5 mb-0"
+                            id="problemQuickEditModalLabel"
+                        >
+                            Editar problema
+                        </h2>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Fechar"
+                    ></button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="mb-3">
+
+                        <label
+                            for="quickAssignedTo"
+                            class="form-label"
+                        >
+                            Responsável
+                        </label>
+
+                        <select
+                            id="quickAssignedTo"
+                            name="assigned_to"
+                            class="form-select"
+                        >
+                            <option value="">
+                                Não atribuído
+                            </option>
+
+                            {% for item in users %}
+
+                                <option value="{{ item.id }}">
+                                    {% if item.get_full_name %}
+                                        {{ item.get_full_name }} ({{ item.username }})
+                                    {% else %}
+                                        {{ item.username }}
+                                    {% endif %}
+                                </option>
+
+                            {% endfor %}
+                        </select>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label
+                            for="quickPriority"
+                            class="form-label"
+                        >
+                            Criticidade
+                        </label>
+
+                        <select
+                            id="quickPriority"
+                            name="priority"
+                            class="form-select"
+                            required
+                        >
+                            <option value="P0">
+                                P0 - Crítica
+                            </option>
+
+                            <option value="P1">
+                                P1 - Alta
+                            </option>
+
+                            <option value="P2">
+                                P2 - Operacional
+                            </option>
+                        </select>
+
+                        <div class="form-text">
+                            A cor da borda do card acompanha automaticamente a criticidade.
+                        </div>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label
+                            for="quickStatus"
+                            class="form-label"
+                        >
+                            Status
+                        </label>
+
+                        <select
+                            id="quickStatus"
+                            name="workflow_status"
+                            class="form-select"
+                            required
+                        >
+                            {% for value, label in workflow_choices %}
+
+                                <option value="{{ value }}">
+                                    {{ label }}
+                                </option>
+
+                            {% endfor %}
+                        </select>
+
+                    </div>
+
+                    <div class="mb-2">
+
+                        <label
+                            for="quickDueAt"
+                            class="form-label"
+                        >
+                            Data fim da atividade
+                        </label>
+
+                        <input
+                            id="quickDueAt"
+                            name="due_at"
+                            type="datetime-local"
+                            class="form-control"
+                        >
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal"
+                    >
+                        Cancelar
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="btn btn-info fw-bold"
+                    >
+                        Salvar alterações
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+</div>

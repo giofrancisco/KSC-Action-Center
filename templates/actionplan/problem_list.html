@@ -1,0 +1,484 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Problemas - KSC Action Center
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+
+    <div>
+        <div class="text-info text-uppercase small fw-bold mb-1">
+            Segurança
+        </div>
+
+        <h1 class="h3 fw-bold mb-1">
+            Problemas de Segurança
+        </h1>
+
+        <p class="text-secondary mb-0">
+            Visualização detalhada das atividades.
+        </p>
+    </div>
+
+    <div class="d-flex align-items-center gap-2">
+
+        <a
+            href="{% url 'actionplan:board' %}"
+            class="btn btn-outline-secondary btn-sm"
+        >
+            Quadro
+        </a>
+
+        <a
+            href="{% url 'actionplan:list' %}"
+            class="btn btn-info btn-sm"
+        >
+            Lista
+        </a>
+
+    </div>
+
+</div>
+
+
+<div class="row g-3 mb-4">
+
+    <div class="col-6 col-lg-3">
+        <div class="metric-card">
+            <div class="metric-label">Problemas abertos</div>
+            <div class="metric-value">{{ counts.total }}</div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+        <div class="metric-card">
+            <div class="metric-label">P0</div>
+            <div class="metric-value text-danger">{{ counts.p0 }}</div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+        <div class="metric-card">
+            <div class="metric-label">P1</div>
+            <div class="metric-value text-warning">{{ counts.p1 }}</div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+        <div class="metric-card">
+            <div class="metric-label">P2</div>
+            <div class="metric-value text-info">{{ counts.p2 }}</div>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="d-flex flex-wrap gap-2 mb-3">
+
+    <a
+        href="{% url 'actionplan:list' %}"
+        class="btn btn-sm {% if not priority %}btn-light{% else %}btn-outline-secondary{% endif %}"
+    >
+        Todos {{ counts.total }}
+    </a>
+
+    <a
+        href="{% url 'actionplan:list' %}?priority=P0"
+        class="btn btn-sm {% if priority == 'P0' %}btn-danger{% else %}btn-outline-danger{% endif %}"
+    >
+        P0 {{ counts.p0 }}
+    </a>
+
+    <a
+        href="{% url 'actionplan:list' %}?priority=P1"
+        class="btn btn-sm {% if priority == 'P1' %}btn-warning{% else %}btn-outline-warning{% endif %}"
+    >
+        P1 {{ counts.p1 }}
+    </a>
+
+    <a
+        href="{% url 'actionplan:list' %}?priority=P2"
+        class="btn btn-sm {% if priority == 'P2' %}btn-info{% else %}btn-outline-info{% endif %}"
+    >
+        P2 {{ counts.p2 }}
+    </a>
+
+</div>
+
+
+<form
+    method="get"
+    action="{% url 'actionplan:list' %}"
+    class="panel-card mb-3"
+>
+
+    <div class="row g-2">
+
+        <div class="col-12 col-lg">
+
+            <input
+                type="text"
+                name="q"
+                value="{{ q }}"
+                class="form-control"
+                placeholder="Buscar endpoint, IP, problema ou responsável..."
+            >
+
+        </div>
+
+        <div class="col-12 col-md-4 col-lg-2">
+
+            <select
+                name="priority"
+                class="form-select"
+            >
+                <option value="">Todas prioridades</option>
+
+                <option
+                    value="P0"
+                    {% if priority == "P0" %}selected{% endif %}
+                >
+                    P0 - Crítica
+                </option>
+
+                <option
+                    value="P1"
+                    {% if priority == "P1" %}selected{% endif %}
+                >
+                    P1 - Alta
+                </option>
+
+                <option
+                    value="P2"
+                    {% if priority == "P2" %}selected{% endif %}
+                >
+                    P2 - Operacional
+                </option>
+            </select>
+
+        </div>
+
+        <div class="col-12 col-md-4 col-lg-3">
+
+            <select
+                name="status"
+                class="form-select"
+            >
+                <option value="">Todos os status</option>
+
+                {% for value, label in workflow_choices %}
+
+                    <option
+                        value="{{ value }}"
+                        {% if workflow_status == value %}selected{% endif %}
+                    >
+                        {{ label }}
+                    </option>
+
+                {% endfor %}
+            </select>
+
+        </div>
+
+        <div class="col-12 col-md-auto">
+
+            <button
+                type="submit"
+                class="btn btn-info w-100"
+            >
+                Filtrar
+            </button>
+
+        </div>
+
+        <div class="col-12 col-md-auto">
+
+            <a
+                href="{% url 'actionplan:list' %}"
+                class="btn btn-outline-secondary w-100"
+            >
+                Limpar
+            </a>
+
+        </div>
+
+    </div>
+
+</form>
+
+
+<div class="panel-card p-0 overflow-hidden">
+
+    <div class="table-responsive">
+
+        <table class="table table-dark table-hover align-middle mb-0">
+
+            <thead>
+                <tr>
+                    <th>Criticidade</th>
+                    <th>Problema</th>
+                    <th>Endpoint</th>
+                    <th>Responsável</th>
+                    <th>Status</th>
+                    <th>Data fim</th>
+                    <th>Prazo</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for row in page %}
+
+                    <tr>
+
+                        <td>
+
+                            {% if row.problem.priority == "P0" %}
+                                <span class="badge text-bg-danger">P0</span>
+                            {% elif row.problem.priority == "P1" %}
+                                <span class="badge text-bg-warning">P1</span>
+                            {% else %}
+                                <span class="badge text-bg-info">P2</span>
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            <strong>
+                                {{ row.problem.problem_type.name }}
+                            </strong>
+
+                            <div class="small text-secondary">
+                                #{{ row.problem.id }} • {{ row.problem.problem_type.code }}
+                            </div>
+
+                        </td>
+
+                        <td>
+
+                            {% if row.problem.endpoint %}
+
+                                <strong>
+                                    {{ row.problem.endpoint.hostname }}
+                                </strong>
+
+                                <div class="small text-secondary">
+                                    {{ row.problem.endpoint.ip_address|default:"—" }}
+                                </div>
+
+                            {% else %}
+
+                                <span class="text-secondary">—</span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            {% if row.problem.assigned_to %}
+
+                                <div class="d-flex align-items-center gap-2">
+
+                                    <span class="kanban-avatar">
+                                        {{ row.problem.assigned_to.username|slice:":2"|upper }}
+                                    </span>
+
+                                    <span>
+                                        {{ row.problem.assigned_to.username }}
+                                    </span>
+
+                                </div>
+
+                            {% else %}
+
+                                <span class="text-secondary">
+                                    Não atribuído
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            <span class="badge text-bg-secondary">
+                                {{ row.problem.get_workflow_status_display }}
+                            </span>
+
+                        </td>
+
+                        <td class="text-nowrap">
+
+                            {% if row.problem.due_at %}
+
+                                {{ row.problem.due_at|date:"d/m/Y H:i" }}
+
+                            {% else %}
+
+                                <span class="text-secondary">
+                                    Não definida
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td class="text-nowrap">
+
+                            {% if row.overdue %}
+
+                                <span class="text-danger fw-bold">
+                                    {{ row.sla_text }}
+                                </span>
+
+                            {% else %}
+
+                                <span class="text-warning">
+                                    {{ row.sla_text }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            <button
+                                type="button"
+                                class="btn btn-sm btn-outline-info js-problem-edit"
+
+                                data-bs-toggle="modal"
+                                data-bs-target="#problemQuickEditModal"
+
+                                data-update-url="{% url 'actionplan:update' row.problem.id %}"
+                                data-problem-id="{{ row.problem.id }}"
+                                data-problem-title="{{ row.problem.problem_type.name|escape }}"
+                                data-assigned-to="{{ row.problem.assigned_to_id|default:'' }}"
+                                data-priority="{{ row.problem.priority }}"
+                                data-status="{{ row.problem.workflow_status }}"
+                                data-due-at="{{ row.due_input }}"
+                            >
+                                Editar
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                {% empty %}
+
+                    <tr>
+                        <td
+                            colspan="8"
+                            class="text-center text-secondary py-5"
+                        >
+                            Nenhum problema encontrado.
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mt-3">
+
+    <div class="text-secondary small">
+
+        {% if page.paginator.count %}
+
+            Exibindo
+            {{ page.start_index }}
+            até
+            {{ page.end_index }}
+            de
+            {{ page.paginator.count }}
+            problema(s).
+
+        {% else %}
+
+            Nenhum problema.
+
+        {% endif %}
+
+    </div>
+
+
+    {% if page.paginator.num_pages > 1 %}
+
+        <nav>
+
+            <ul class="pagination pagination-sm mb-0">
+
+                {% if page.has_previous %}
+
+                    <li class="page-item">
+
+                        <a
+                            class="page-link"
+                            href="?q={{ q|urlencode }}&priority={{ priority|urlencode }}&status={{ workflow_status|urlencode }}&page={{ page.previous_page_number }}"
+                        >
+                            Anterior
+                        </a>
+
+                    </li>
+
+                {% endif %}
+
+                <li class="page-item disabled">
+
+                    <span class="page-link">
+                        Página {{ page.number }} de {{ page.paginator.num_pages }}
+                    </span>
+
+                </li>
+
+                {% if page.has_next %}
+
+                    <li class="page-item">
+
+                        <a
+                            class="page-link"
+                            href="?q={{ q|urlencode }}&priority={{ priority|urlencode }}&status={{ workflow_status|urlencode }}&page={{ page.next_page_number }}"
+                        >
+                            Próxima
+                        </a>
+
+                    </li>
+
+                {% endif %}
+
+            </ul>
+
+        </nav>
+
+    {% endif %}
+
+</div>
+
+
+{% include "actionplan/_quick_edit_modal.html" %}
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script
+    src="{% static 'js/problem-quick-edit.js' %}?v=1"
+></script>
+
+{% endblock %}

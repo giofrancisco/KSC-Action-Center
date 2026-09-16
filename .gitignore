@@ -1,0 +1,14 @@
+.venv/
+.env
+__pycache__/
+*.py[cod]
+*.sqlite3
+.pytest_cache/
+.vscode/
+.idea/
+staticfiles/
+logs/
+certs/*.pem
+certs/*.cer
+certs/*.crt
+!certs/README.md

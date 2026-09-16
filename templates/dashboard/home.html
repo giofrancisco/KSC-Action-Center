@@ -1,0 +1,800 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Dashboard - KSC Action Center
+{% endblock %}
+
+
+{% block content %}
+
+
+{% if not customer %}
+
+
+    <!-- =====================================================
+    SEM CLIENTE
+    ====================================================== -->
+
+    <div class="alert alert-warning">
+
+        Nenhum cliente cadastrado.
+
+        Execute:
+
+        <code>
+            python manage.py seed_customer
+        </code>
+
+        ou cadastre um cliente em
+
+        <a href="/admin/">
+            Administração
+        </a>.
+
+    </div>
+
+
+{% else %}
+
+
+
+<!-- =========================================================
+CABEÇALHO DO CLIENTE
+========================================================= -->
+
+<div
+    class="
+        d-flex
+        flex-wrap
+        justify-content-between
+        align-items-start
+        gap-3
+        mb-4
+    "
+>
+
+
+    <!-- CLIENTE -->
+
+    <div>
+
+
+        <div
+            class="
+                text-info
+                text-uppercase
+                small
+                fw-bold
+            "
+        >
+            Cliente
+        </div>
+
+
+        <h1
+            class="
+                h3
+                fw-bold
+                mb-1
+            "
+        >
+            {{ customer.name }}
+        </h1>
+
+
+        <div class="text-secondary">
+
+            Kaspersky Security Center
+
+            •
+
+            {{ customer.ksc_host }}:{{ customer.ksc_port }}
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- ÚLTIMA SINCRONIZAÇÃO -->
+
+    <div
+        class="
+            text-lg-end
+            small
+            text-secondary
+        "
+    >
+
+
+        {% if last_sync %}
+
+
+            <div>
+
+                Última sincronização:
+
+                {{ last_sync.started_at|date:"d/m/Y H:i:s" }}
+
+            </div>
+
+
+            <div>
+
+                Status:
+
+
+                {% if last_sync.status == "SUCCESS" %}
+
+
+                    <strong
+                        class="text-success"
+                    >
+                        Sucesso
+                    </strong>
+
+
+                {% elif last_sync.status == "FAILED" %}
+
+
+                    <strong
+                        class="text-danger"
+                    >
+                        Falha
+                    </strong>
+
+
+                {% elif last_sync.status == "RUNNING" %}
+
+
+                    <strong
+                        class="text-warning"
+                    >
+                        Executando
+                    </strong>
+
+
+                {% else %}
+
+
+                    <strong
+                        class="text-secondary"
+                    >
+                        {{ last_sync.status }}
+                    </strong>
+
+
+                {% endif %}
+
+
+            </div>
+
+
+        {% else %}
+
+
+            <div>
+
+                Nenhuma sincronização registrada.
+
+            </div>
+
+
+        {% endif %}
+
+
+    </div>
+
+
+</div>
+
+
+
+<!-- =========================================================
+KPIs
+========================================================= -->
+
+<div
+    class="
+        row
+        g-3
+        mb-4
+    "
+>
+
+
+    <!-- ENDPOINTS -->
+
+    <div
+        class="
+            col-6
+            col-md-4
+            col-xl
+        "
+    >
+
+        <div class="metric-card">
+
+            <div class="metric-label">
+
+                Endpoints
+
+            </div>
+
+
+            <div
+                class="
+                    metric-value
+                    text-info
+                "
+            >
+
+                {{ total_endpoints }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- OK -->
+
+    <div
+        class="
+            col-6
+            col-md-4
+            col-xl
+        "
+    >
+
+        <div class="metric-card">
+
+            <div class="metric-label">
+
+                Protegidos / OK
+
+            </div>
+
+
+            <div
+                class="
+                    metric-value
+                    text-success
+                "
+            >
+
+                {{ ok_count }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- CRÍTICOS -->
+
+    <div
+        class="
+            col-6
+            col-md-4
+            col-xl
+        "
+    >
+
+        <div class="metric-card">
+
+            <div class="metric-label">
+
+                Críticos
+
+            </div>
+
+
+            <div
+                class="
+                    metric-value
+                    text-danger
+                "
+            >
+
+                {{ critical_count }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- AVISOS -->
+
+    <div
+        class="
+            col-6
+            col-md-4
+            col-xl
+        "
+    >
+
+        <div class="metric-card">
+
+            <div class="metric-label">
+
+                Avisos
+
+            </div>
+
+
+            <div
+                class="
+                    metric-value
+                    text-warning
+                "
+            >
+
+                {{ warning_count }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- PROBLEMAS -->
+
+    <div
+        class="
+            col-6
+            col-md-4
+            col-xl
+        "
+    >
+
+        <div class="metric-card">
+
+            <div class="metric-label">
+
+                Problemas abertos
+
+            </div>
+
+
+            <div class="metric-value">
+
+                {{ open_problem_count }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+<!-- =========================================================
+SEGUNDA LINHA
+========================================================= -->
+
+<div class="row g-3">
+
+
+    <!-- =====================================================
+    STATUS DE PROTEÇÃO
+    ====================================================== -->
+
+    <div
+        class="
+            col-12
+            col-xl-7
+        "
+    >
+
+        <div
+            class="
+                panel-card
+                h-100
+            "
+        >
+
+
+            <!-- CABEÇALHO -->
+
+            <div
+                class="
+                    d-flex
+                    justify-content-between
+                    align-items-center
+                    mb-3
+                "
+            >
+
+
+                <h2
+                    class="
+                        h6
+                        text-uppercase
+                        fw-bold
+                        mb-0
+                    "
+                >
+                    Status de Proteção
+                </h2>
+
+
+
+                <a
+                    href="{% url 'inventory:list' %}"
+                    class="
+                        btn
+                        btn-sm
+                        btn-outline-info
+                    "
+                >
+                    Ver endpoints
+                </a>
+
+
+            </div>
+
+
+
+            <!-- GRÁFICO -->
+
+            <div
+                style="
+                    height: 330px;
+                "
+            >
+
+                <canvas
+                    id="statusChart"
+                ></canvas>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+    PLANO DE AÇÃO
+    ====================================================== -->
+
+    <div
+        class="
+            col-12
+            col-xl-5
+        "
+    >
+
+        <div
+            class="
+                panel-card
+                h-100
+            "
+        >
+
+
+            <h2
+                class="
+                    h6
+                    text-uppercase
+                    fw-bold
+                    mb-3
+                "
+            >
+                Plano de Ação — Estrutura Inicial
+            </h2>
+
+
+
+            <!-- PRIORIDADES -->
+
+            <div class="row g-3">
+
+
+                <!-- P0 -->
+
+                <div class="col-4">
+
+                    <div class="mini-card">
+
+                        <div
+                            class="
+                                text-secondary
+                                small
+                            "
+                        >
+                            P0
+                        </div>
+
+
+                        <div
+                            class="
+                                fs-3
+                                fw-bold
+                                text-danger
+                            "
+                        >
+                            {{ p0_count }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- P1 -->
+
+                <div class="col-4">
+
+                    <div class="mini-card">
+
+                        <div
+                            class="
+                                text-secondary
+                                small
+                            "
+                        >
+                            P1
+                        </div>
+
+
+                        <div
+                            class="
+                                fs-3
+                                fw-bold
+                                text-warning
+                            "
+                        >
+                            {{ p1_count }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- P2 -->
+
+                <div class="col-4">
+
+                    <div class="mini-card">
+
+                        <div
+                            class="
+                                text-secondary
+                                small
+                            "
+                        >
+                            P2
+                        </div>
+
+
+                        <div
+                            class="
+                                fs-3
+                                fw-bold
+                                text-info
+                            "
+                        >
+                            {{ p2_count }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <hr
+                class="
+                    border-secondary-subtle
+                    my-4
+                "
+            >
+
+
+
+            <p class="text-secondary">
+
+                Este painel apresenta os problemas
+                identificados no ambiente e permite
+                acompanhar as prioridades P0, P1 e P2.
+
+                O quadro de problemas será utilizado
+                para organizar o atendimento,
+                responsáveis, prazos e evolução
+                até o status protegido.
+
+            </p>
+
+
+
+            <!-- =================================================
+            BOTÃO PROBLEMAS / KANBAN
+            ================================================== -->
+
+            <a
+                href="{% url 'actionplan:board' %}"
+                class="
+                    btn
+                    btn-outline-info
+                    btn-sm
+                "
+            >
+                Ver problemas
+            </a>
+
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+{% endif %}
+
+
+{% endblock %}
+
+
+
+<!-- =========================================================
+SCRIPTS
+========================================================= -->
+
+{% block scripts %}
+
+
+{% if customer %}
+
+
+<script>
+
+    const statusChartCanvas =
+        document.getElementById(
+            "statusChart"
+        );
+
+
+    if (statusChartCanvas) {
+
+        new Chart(
+            statusChartCanvas,
+            {
+
+                type: "doughnut",
+
+
+                data: {
+
+                    labels: [
+                        "OK",
+                        "Crítico",
+                        "Aviso",
+                        "Desconhecido"
+                    ],
+
+
+                    datasets: [
+
+                        {
+
+                            data: [
+
+                                {{ ok_count }},
+
+                                {{ critical_count }},
+
+                                {{ warning_count }},
+
+                                {{ unknown_count }}
+
+                            ],
+
+
+                            backgroundColor: [
+
+                                "#00d084",
+
+                                "#ff4d5e",
+
+                                "#ffb020",
+
+                                "#607d8b"
+
+                            ],
+
+
+                            borderColor:
+                                "#0d1b2a",
+
+
+                            borderWidth:
+                                4
+
+                        }
+
+                    ]
+
+                },
+
+
+                options: {
+
+                    responsive:
+                        true,
+
+
+                    maintainAspectRatio:
+                        false,
+
+
+                    cutout:
+                        "48%",
+
+
+                    plugins: {
+
+                        legend: {
+
+                            position:
+                                "top",
+
+
+                            labels: {
+
+                                color:
+                                    "#dbe8f5",
+
+
+                                usePointStyle:
+                                    false,
+
+
+                                padding:
+                                    14
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+        );
+
+    }
+
+</script>
+
+
+{% endif %}
+
+
+{% endblock %}

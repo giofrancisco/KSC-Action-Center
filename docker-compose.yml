@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:18
+    container_name: ksc-action-center-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-ksc_action_center}
+      POSTGRES_USER: ${POSTGRES_USER:-ksc_action}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-TroqueEstaSenha}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - ksc_action_center_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ksc_action} -d ${POSTGRES_DB:-ksc_action_center}"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+
+volumes:
+  ksc_action_center_pgdata:

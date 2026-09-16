@@ -1,0 +1,436 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Problemas - KSC Action Center
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+
+    <div>
+        <div class="text-info text-uppercase small fw-bold mb-1">
+            Segurança
+        </div>
+
+        <h1 class="h3 fw-bold mb-1">
+            Problemas de Segurança
+        </h1>
+
+        <p class="text-secondary mb-0">
+            Gestão das atividades em formato Kanban.
+        </p>
+    </div>
+
+    <div class="d-flex align-items-center gap-2">
+
+        <a
+            href="{% url 'actionplan:board' %}"
+            class="btn btn-info btn-sm"
+        >
+            Quadro
+        </a>
+
+        <a
+            href="{% url 'actionplan:list' %}"
+            class="btn btn-outline-secondary btn-sm"
+        >
+            Lista
+        </a>
+
+    </div>
+
+</div>
+
+
+<div class="row g-3 mb-4">
+
+    <div class="col-6 col-md-3">
+        <div class="metric-card">
+            <div class="metric-label">Problemas abertos</div>
+            <div class="metric-value">{{ counts.total }}</div>
+        </div>
+    </div>
+
+    <div class="col-6 col-md-3">
+        <div class="metric-card">
+            <div class="metric-label">P0</div>
+            <div class="metric-value text-danger">{{ counts.p0 }}</div>
+        </div>
+    </div>
+
+    <div class="col-6 col-md-3">
+        <div class="metric-card">
+            <div class="metric-label">P1</div>
+            <div class="metric-value text-warning">{{ counts.p1 }}</div>
+        </div>
+    </div>
+
+    <div class="col-6 col-md-3">
+        <div class="metric-card">
+            <div class="metric-label">P2</div>
+            <div class="metric-value text-info">{{ counts.p2 }}</div>
+        </div>
+    </div>
+
+</div>
+
+
+<form
+    method="get"
+    action="{% url 'actionplan:board' %}"
+    class="panel-card mb-4"
+>
+
+    <div class="row g-2">
+
+        <div class="col-12 col-lg">
+
+            <input
+                type="text"
+                name="q"
+                value="{{ q }}"
+                class="form-control"
+                placeholder="Buscar endpoint, IP, problema ou responsável..."
+            >
+
+        </div>
+
+        <div class="col-12 col-md-5 col-lg-3">
+
+            <select
+                name="priority"
+                class="form-select"
+            >
+                <option value="">Todas as prioridades</option>
+
+                <option
+                    value="P0"
+                    {% if priority == "P0" %}selected{% endif %}
+                >
+                    P0 - Crítica
+                </option>
+
+                <option
+                    value="P1"
+                    {% if priority == "P1" %}selected{% endif %}
+                >
+                    P1 - Alta
+                </option>
+
+                <option
+                    value="P2"
+                    {% if priority == "P2" %}selected{% endif %}
+                >
+                    P2 - Operacional
+                </option>
+            </select>
+
+        </div>
+
+        <div class="col-12 col-md-auto">
+
+            <button
+                type="submit"
+                class="btn btn-info w-100"
+            >
+                Filtrar
+            </button>
+
+        </div>
+
+        <div class="col-12 col-md-auto">
+
+            <a
+                href="{% url 'actionplan:board' %}"
+                class="btn btn-outline-secondary w-100"
+            >
+                Limpar
+            </a>
+
+        </div>
+
+    </div>
+
+</form>
+
+
+<div class="d-flex flex-wrap gap-2 mb-3">
+
+    <a
+        href="{% url 'actionplan:board' %}"
+        class="btn btn-sm {% if not priority %}btn-light{% else %}btn-outline-secondary{% endif %}"
+    >
+        Todos {{ counts.total }}
+    </a>
+
+    <a
+        href="{% url 'actionplan:board' %}?priority=P0"
+        class="btn btn-sm {% if priority == 'P0' %}btn-danger{% else %}btn-outline-danger{% endif %}"
+    >
+        P0 {{ counts.p0 }}
+    </a>
+
+    <a
+        href="{% url 'actionplan:board' %}?priority=P1"
+        class="btn btn-sm {% if priority == 'P1' %}btn-warning{% else %}btn-outline-warning{% endif %}"
+    >
+        P1 {{ counts.p1 }}
+    </a>
+
+    <a
+        href="{% url 'actionplan:board' %}?priority=P2"
+        class="btn btn-sm {% if priority == 'P2' %}btn-info{% else %}btn-outline-info{% endif %}"
+    >
+        P2 {{ counts.p2 }}
+    </a>
+
+</div>
+
+
+<div class="kanban-wrapper">
+
+    <div class="kanban-board">
+
+        {% for column in columns %}
+
+            <section class="kanban-column">
+
+                <div class="kanban-column-header">
+
+                    <div>
+                        <div class="kanban-column-title">
+                            {{ column.label }}
+                        </div>
+
+                        <div class="kanban-column-description">
+                            {{ column.description }}
+                        </div>
+                    </div>
+
+                    <span class="kanban-column-count">
+                        {{ column.count }}
+                    </span>
+
+                </div>
+
+
+                <div class="kanban-column-body">
+
+                    {% for card in column.cards %}
+
+                        <article
+                            class="kanban-card priority-{{ card.problem.priority|lower }}"
+                        >
+
+                            <div class="kanban-card-top">
+
+                                <div>
+                                    {% if card.problem.priority == "P0" %}
+                                        <span class="badge text-bg-danger">P0</span>
+                                    {% elif card.problem.priority == "P1" %}
+                                        <span class="badge text-bg-warning">P1</span>
+                                    {% else %}
+                                        <span class="badge text-bg-info">P2</span>
+                                    {% endif %}
+                                </div>
+
+                                <span class="kanban-card-id">
+                                    #{{ card.problem.id }}
+                                </span>
+
+                            </div>
+
+
+                            <div class="kanban-card-title">
+                                {{ card.problem.problem_type.name }}
+                            </div>
+
+                            <div class="kanban-card-code">
+                                {{ card.problem.problem_type.code }}
+                            </div>
+
+
+                            <div class="kanban-card-section">
+
+                                <div class="kanban-card-label">
+                                    Endpoint
+                                </div>
+
+                                {% if card.problem.endpoint %}
+
+                                    <div class="kanban-card-value">
+                                        {{ card.problem.endpoint.hostname }}
+                                    </div>
+
+                                    <div class="kanban-card-secondary">
+                                        {{ card.problem.endpoint.ip_address|default:"Sem IP" }}
+                                    </div>
+
+                                {% else %}
+
+                                    <div class="kanban-card-secondary">
+                                        Não associado
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <div class="kanban-card-grid">
+
+                                <div class="kanban-card-section">
+
+                                    <div class="kanban-card-label">
+                                        Responsável
+                                    </div>
+
+                                    {% if card.problem.assigned_to %}
+
+                                        <div class="kanban-card-value">
+                                            {{ card.problem.assigned_to.username }}
+                                        </div>
+
+                                    {% else %}
+
+                                        <div class="kanban-card-secondary">
+                                            Não atribuído
+                                        </div>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <div class="kanban-card-section">
+
+                                    <div class="kanban-card-label">
+                                        Status
+                                    </div>
+
+                                    <div class="kanban-card-value">
+                                        {{ card.problem.get_workflow_status_display }}
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="kanban-card-section">
+
+                                <div class="kanban-card-label">
+                                    Data fim da atividade
+                                </div>
+
+                                {% if card.problem.due_at %}
+
+                                    <div class="kanban-card-value">
+                                        {{ card.problem.due_at|date:"d/m/Y H:i" }}
+                                    </div>
+
+                                {% else %}
+
+                                    <div class="kanban-card-secondary">
+                                        Não definida
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <div class="kanban-card-section">
+
+                                <div class="kanban-card-label">
+                                    Prazo
+                                </div>
+
+                                {% if card.overdue %}
+
+                                    <div class="kanban-sla kanban-sla-overdue">
+                                        {{ card.sla_text }}
+                                    </div>
+
+                                {% else %}
+
+                                    <div class="kanban-sla kanban-sla-ok">
+                                        {{ card.sla_text }}
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <div class="kanban-card-footer">
+
+                                <div>
+
+                                    {% if card.problem.assigned_to %}
+                                        <span class="kanban-avatar">
+                                            {{ card.problem.assigned_to.username|slice:":2"|upper }}
+                                        </span>
+                                    {% endif %}
+
+                                    <span class="kanban-age">
+                                        Aberto há {{ card.age_text }}
+                                    </span>
+
+                                </div>
+
+                                <button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-info js-problem-edit"
+
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#problemQuickEditModal"
+
+                                    data-update-url="{% url 'actionplan:update' card.problem.id %}"
+                                    data-problem-id="{{ card.problem.id }}"
+                                    data-problem-title="{{ card.problem.problem_type.name|escape }}"
+                                    data-assigned-to="{{ card.problem.assigned_to_id|default:'' }}"
+                                    data-priority="{{ card.problem.priority }}"
+                                    data-status="{{ card.problem.workflow_status }}"
+                                    data-due-at="{{ card.due_input }}"
+                                >
+                                    Editar
+                                </button>
+
+                            </div>
+
+                        </article>
+
+                    {% empty %}
+
+                        <div class="kanban-empty">
+                            Nenhum problema.
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </section>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+
+{% include "actionplan/_quick_edit_modal.html" %}
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script
+    src="{% static 'js/problem-quick-edit.js' %}?v=1"
+></script>
+
+{% endblock %}
