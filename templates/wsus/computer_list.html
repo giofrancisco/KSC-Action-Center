@@ -11,7 +11,7 @@ WSUS - Computadores
 
 <link
     rel="stylesheet"
-    href="{% static 'css/wsus-module.css' %}?v=2"
+    href="{% static 'css/wsus-module.css' %}?v=3"
 >
 
 {% endblock %}
@@ -276,31 +276,38 @@ WSUS - Computadores
 
                         </td>
 
+
                         <td>
                             <strong>
                                 {{ computer.hostname }}
                             </strong>
                         </td>
 
+
                         <td class="text-nowrap">
                             {{ computer.ip_address|default:"—" }}
                         </td>
+
 
                         <td>
                             {{ computer.os_name|default:"—" }}
                         </td>
 
+
                         <td>
                             {{ computer.group_name|default:"—" }}
                         </td>
+
 
                         <td>
                             {{ computer.needed_count }}
                         </td>
 
+
                         <td>
                             {{ computer.failed_count }}
                         </td>
+
 
                         <td>
 
@@ -320,6 +327,7 @@ WSUS - Computadores
 
                         </td>
 
+
                         <td class="text-nowrap">
 
                             {% if computer.last_report_at %}
@@ -334,18 +342,41 @@ WSUS - Computadores
 
                         </td>
 
+
                         <td class="text-nowrap">
 
                             {% if computer.open_maintenance_tasks %}
 
                                 {% with task=computer.open_maintenance_tasks.0 %}
 
-                                    <a
-                                        href="{% url 'wsus:activities' %}?q={{ computer.hostname|urlencode }}"
-                                        class="btn btn-sm btn-outline-warning"
-                                    >
-                                        Atividade #{{ task.id }}
-                                    </a>
+                                    <div class="d-flex gap-2">
+
+                                        <a
+                                            href="{% url 'wsus:activities' %}?q={{ computer.hostname|urlencode }}"
+                                            class="btn btn-sm btn-outline-warning"
+                                        >
+                                            Atividade #{{ task.id }}
+                                        </a>
+
+
+                                        <button
+                                            type="button"
+                                            class="
+                                                btn
+                                                btn-sm
+                                                btn-outline-secondary
+                                                js-wsus-history
+                                            "
+
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#wsusTaskHistoryModal"
+
+                                            data-history-url="{% url 'wsus:task_history' task.id %}"
+                                        >
+                                            Histórico
+                                        </button>
+
+                                    </div>
 
                                 {% endwith %}
 
@@ -482,6 +513,8 @@ WSUS - Computadores
 
 {% include "wsus/_task_modal.html" %}
 
+{% include "wsus/_task_history_modal.html" %}
+
 
 {% endblock %}
 
@@ -490,6 +523,10 @@ WSUS - Computadores
 
 <script
     src="{% static 'js/wsus-task-editor.js' %}?v=1"
+></script>
+
+<script
+    src="{% static 'js/wsus-task-history.js' %}?v=1"
 ></script>
 
 {% endblock %}

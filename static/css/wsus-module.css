@@ -265,7 +265,8 @@
     font-size: 10px;
 }
 
-.wsus-task-modal {
+.wsus-task-modal,
+.wsus-history-modal {
     color: #eaf2f9;
 
     background:
@@ -287,6 +288,12 @@
 .modal-header,
 
 .wsus-task-modal
+.modal-footer,
+
+.wsus-history-modal
+.modal-header,
+
+.wsus-history-modal
 .modal-footer {
     border-color: #203e58;
 }
@@ -312,6 +319,205 @@
     gap: 8px;
 }
 
+
+/* =============================================
+   HISTÓRICO / TIMELINE
+   ============================================= */
+
+.wsus-history-loading {
+    min-height: 260px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #7892a7;
+    font-size: 13px;
+}
+
+.wsus-history-summary {
+    display: grid;
+    grid-template-columns:
+        repeat(
+            3,
+            minmax(
+                0,
+                1fr
+            )
+        );
+    gap: 10px;
+}
+
+.wsus-history-summary-item {
+    min-width: 0;
+    padding: 12px;
+    background: rgba(5, 20, 31, 0.46);
+    border: 1px solid #25465d;
+    border-radius: 9px;
+}
+
+.wsus-history-summary-label {
+    color: #638097;
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: 0.04rem;
+    text-transform: uppercase;
+}
+
+.wsus-history-summary-value {
+    margin-top: 5px;
+    color: #edf6fb;
+    font-size: 12px;
+    font-weight: 800;
+    overflow-wrap: anywhere;
+}
+
+.wsus-history-section-title {
+    margin-bottom: 10px;
+    color: #dceaf3;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.05rem;
+    text-transform: uppercase;
+}
+
+.wsus-history-notes-block {
+    margin-top: 14px;
+    padding: 13px;
+    background: rgba(5, 20, 31, 0.38);
+    border: 1px solid #25465d;
+    border-radius: 9px;
+}
+
+.wsus-history-current-notes {
+    color: #9eb2c1;
+    font-size: 11px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+.wsus-history-timeline {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.wsus-history-event {
+    position: relative;
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr);
+    gap: 12px;
+    padding-bottom: 18px;
+}
+
+.wsus-history-event:last-child {
+    padding-bottom: 0;
+}
+
+.wsus-history-event-rail {
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.wsus-history-event-rail::after {
+    position: absolute;
+    top: 19px;
+    bottom: -18px;
+    left: 50%;
+    width: 1px;
+    content: "";
+    transform: translateX(-50%);
+    background: #294a61;
+}
+
+.wsus-history-event:last-child
+.wsus-history-event-rail::after {
+    display: none;
+}
+
+.wsus-history-event-marker {
+    position: relative;
+    z-index: 2;
+    width: 12px;
+    height: 12px;
+    margin-top: 5px;
+    background: #6d879a;
+    border: 3px solid #0b1f30;
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px #375b73;
+}
+
+.wsus-history-event-marker.tone-info {
+    background: #10c6e8;
+}
+
+.wsus-history-event-marker.tone-primary {
+    background: #428bff;
+}
+
+.wsus-history-event-marker.tone-warning {
+    background: #ffb629;
+}
+
+.wsus-history-event-marker.tone-danger {
+    background: #ff465d;
+}
+
+.wsus-history-event-marker.tone-success {
+    background: #00d29a;
+}
+
+.wsus-history-event-body {
+    min-width: 0;
+    padding: 11px 12px;
+    background: rgba(8, 27, 42, 0.72);
+    border: 1px solid #25455c;
+    border-radius: 9px;
+}
+
+.wsus-history-event-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.wsus-history-event-label {
+    color: #f0f6fb;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.wsus-history-event-date {
+    flex: 0 0 auto;
+    color: #627e93;
+    font-size: 9px;
+}
+
+.wsus-history-event-description {
+    margin-top: 6px;
+    color: #9bb0c0;
+    font-size: 11px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+}
+
+.wsus-history-event-actor {
+    margin-top: 7px;
+    color: #5f7e94;
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.wsus-history-empty {
+    padding: 32px 15px;
+    color: #67849a;
+    border: 1px dashed #29495f;
+    border-radius: 9px;
+    text-align: center;
+    font-size: 11px;
+}
+
+
 @media (
     max-width:
     991.98px
@@ -328,7 +534,19 @@
             );
     }
 
+    .wsus-history-summary {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(
+                    0,
+                    1fr
+                )
+            );
+    }
+
 }
+
 
 @media (
     max-width:
@@ -344,6 +562,15 @@
         flex-basis: 280px;
         width: 280px;
         max-width: 280px;
+    }
+
+    .wsus-history-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .wsus-history-event-header {
+        flex-direction: column;
+        gap: 4px;
     }
 
 }

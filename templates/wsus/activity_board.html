@@ -11,7 +11,7 @@ WSUS - Atividades
 
 <link
     rel="stylesheet"
-    href="{% static 'css/wsus-module.css' %}?v=2"
+    href="{% static 'css/wsus-module.css' %}?v=3"
 >
 
 {% endblock %}
@@ -52,47 +52,70 @@ WSUS - Atividades
 <div class="row g-3 mb-3">
 
     <div class="col-6 col-lg-3">
+
         <div class="metric-card">
+
             <div class="metric-label">
                 Atividades
             </div>
+
             <div class="metric-value">
                 {{ counts.total }}
             </div>
+
         </div>
+
     </div>
 
+
     <div class="col-6 col-lg-3">
+
         <div class="metric-card">
+
             <div class="metric-label">
                 P0
             </div>
+
             <div class="metric-value text-danger">
                 {{ counts.p0 }}
             </div>
+
         </div>
+
     </div>
 
+
     <div class="col-6 col-lg-3">
+
         <div class="metric-card">
+
             <div class="metric-label">
                 P1
             </div>
+
             <div class="metric-value text-warning">
                 {{ counts.p1 }}
             </div>
+
         </div>
+
     </div>
 
+
     <div class="col-6 col-lg-3">
+
         <div class="metric-card">
+
             <div class="metric-label">
                 P2
             </div>
+
             <div class="metric-value text-info">
                 {{ counts.p2 }}
             </div>
+
         </div>
+
     </div>
 
 </div>
@@ -264,6 +287,7 @@ WSUS - Atividades
                                 {{ card.task.computer.hostname }}
                             </div>
 
+
                             <div class="wsus-task-ip">
                                 {{ card.task.computer.ip_address|default:"Sem IP" }}
                             </div>
@@ -282,6 +306,7 @@ WSUS - Atividades
                                     </div>
 
                                 </div>
+
 
                                 <div>
 
@@ -410,35 +435,57 @@ WSUS - Atividades
                                 </span>
 
 
-                                <button
-                                    type="button"
-                                    class="
-                                        btn
-                                        btn-sm
-                                        btn-outline-info
-                                        js-wsus-task-modal
-                                    "
+                                <div class="d-flex gap-2">
 
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#wsusTaskModal"
+                                    <button
+                                        type="button"
+                                        class="
+                                            btn
+                                            btn-sm
+                                            btn-outline-secondary
+                                            js-wsus-history
+                                        "
 
-                                    data-mode="edit"
-                                    data-action-url="{% url 'wsus:task_update' card.task.id %}"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#wsusTaskHistoryModal"
 
-                                    data-task-id="{{ card.task.id }}"
-                                    data-hostname="{{ card.task.computer.hostname|escape }}"
-                                    data-ip="{{ card.task.computer.ip_address|default:''|escape }}"
+                                        data-history-url="{% url 'wsus:task_history' card.task.id %}"
+                                    >
+                                        Histórico
+                                    </button>
 
-                                    data-assigned-to="{{ card.task.assigned_to_id|default:'' }}"
-                                    data-priority="{{ card.task.priority }}"
-                                    data-status="{{ card.task.status }}"
-                                    data-start-at="{{ card.start_input }}"
-                                    data-end-at="{{ card.end_input }}"
-                                    data-allow-reboot="{% if card.task.allow_reboot %}1{% else %}0{% endif %}"
-                                    data-notes="{{ card.task.notes|escape }}"
-                                >
-                                    Editar
-                                </button>
+
+                                    <button
+                                        type="button"
+                                        class="
+                                            btn
+                                            btn-sm
+                                            btn-outline-info
+                                            js-wsus-task-modal
+                                        "
+
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#wsusTaskModal"
+
+                                        data-mode="edit"
+                                        data-action-url="{% url 'wsus:task_update' card.task.id %}"
+
+                                        data-task-id="{{ card.task.id }}"
+                                        data-hostname="{{ card.task.computer.hostname|escape }}"
+                                        data-ip="{{ card.task.computer.ip_address|default:''|escape }}"
+
+                                        data-assigned-to="{{ card.task.assigned_to_id|default:'' }}"
+                                        data-priority="{{ card.task.priority }}"
+                                        data-status="{{ card.task.status }}"
+                                        data-start-at="{{ card.start_input }}"
+                                        data-end-at="{{ card.end_input }}"
+                                        data-allow-reboot="{% if card.task.allow_reboot %}1{% else %}0{% endif %}"
+                                        data-notes="{{ card.task.notes|escape }}"
+                                    >
+                                        Editar
+                                    </button>
+
+                                </div>
 
                             </div>
 
@@ -466,6 +513,8 @@ WSUS - Atividades
 
 {% include "wsus/_task_modal.html" %}
 
+{% include "wsus/_task_history_modal.html" %}
+
 
 {% endblock %}
 
@@ -474,6 +523,10 @@ WSUS - Atividades
 
 <script
     src="{% static 'js/wsus-task-editor.js' %}?v=1"
+></script>
+
+<script
+    src="{% static 'js/wsus-task-history.js' %}?v=1"
 ></script>
 
 {% endblock %}

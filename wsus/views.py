@@ -4,11 +4,12 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Prefetch, Q
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.http import url_has_allowed_host_and_scheme
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_GET, require_POST
 
 from .forms import WsusTaskForm
 from .models import (
@@ -22,42 +23,74 @@ User = get_user_model()
 
 
 ACTIVITY_COLUMNS = [
+
     {
         "key": WsusMaintenanceTask.STATUS_PENDING,
         "label": "Pendente",
         "description": "Aguardando planejamento",
     },
+
     {
         "key": WsusMaintenanceTask.STATUS_SCHEDULED,
         "label": "Agendado",
         "description": "Janela definida",
     },
+
     {
         "key": WsusMaintenanceTask.STATUS_IN_PROGRESS,
         "label": "Em execução",
         "description": "Atualização em andamento",
     },
+
     {
         "key": WsusMaintenanceTask.STATUS_REBOOT,
         "label": "Aguardando reboot",
         "description": "Instalação concluída",
     },
+
     {
         "key": WsusMaintenanceTask.STATUS_VALIDATION,
         "label": "Validação",
         "description": "Aguardando confirmação",
     },
+
     {
         "key": WsusMaintenanceTask.STATUS_BLOCKED,
         "label": "Bloqueado",
         "description": "Existe impedimento",
     },
+
     {
         "key": WsusMaintenanceTask.STATUS_COMPLETED,
         "label": "Concluído",
         "description": "Atividade finalizada",
     },
+
 ]
+
+
+EVENT_LABELS = {
+    "CREATED": "Atividade criada",
+    "ASSIGNMENT_CHANGED": "Responsável alterado",
+    "PRIORITY_CHANGED": "Criticidade alterada",
+    "STATUS_CHANGED": "Status alterado",
+    "START_CHANGED": "Início previsto alterado",
+    "END_CHANGED": "Fim previsto alterado",
+    "REBOOT_CHANGED": "Permissão de reboot alterada",
+    "NOTES_CHANGED": "Observações atualizadas",
+}
+
+
+EVENT_TONES = {
+    "CREATED": "info",
+    "ASSIGNMENT_CHANGED": "info",
+    "PRIORITY_CHANGED": "warning",
+    "STATUS_CHANGED": "primary",
+    "START_CHANGED": "info",
+    "END_CHANGED": "info",
+    "REBOOT_CHANGED": "warning",
+    "NOTES_CHANGED": "secondary",
+}
 
 
 def _active_task_statuses():
@@ -90,19 +123,26 @@ def _safe_redirect_target(
     request,
     fallback_name="wsus:activities",
 ):
-    target = request.POST.get("next", "").strip()
+    target = request.POST.get(
+        "next",
+        "",
+    ).strip()
 
     if (
         target
         and url_has_allowed_host_and_scheme(
             url=target,
-            allowed_hosts={request.get_host()},
+            allowed_hosts={
+                request.get_host()
+            },
             require_https=request.is_secure(),
         )
     ):
         return target
 
-    return reverse(fallback_name)
+    return reverse(
+        fallback_name
+    )
 
 
 def _user_display(user):
@@ -112,7 +152,10 @@ def _user_display(user):
     full_name = user.get_full_name().strip()
 
     if full_name:
-        return f"{full_name} ({user.username})"
+        return (
+            f"{full_name} "
+            f"({user.username})"
+        )
 
     return user.username
 
@@ -123,7 +166,9 @@ def _format_datetime(value):
 
     return timezone.localtime(
         value
-    ).strftime("%d/%m/%Y %H:%M")
+    ).strftime(
+        "%d/%m/%Y %H:%M"
+    )
 
 
 def _datetime_input(value):
@@ -132,18 +177,26 @@ def _datetime_input(value):
 
     return timezone.localtime(
         value
-    ).strftime("%Y-%m-%dT%H:%M")
+    ).strftime(
+        "%Y-%m-%dT%H:%M"
+    )
 
 
 @login_required
 def computer_list(request):
+
     active_tasks = (
         WsusMaintenanceTask.objects
         .filter(
-            status__in=_active_task_statuses()
+            status__in=
+            _active_task_statuses()
         )
-        .select_related("assigned_to")
-        .order_by("-created_at")
+        .select_related(
+            "assigned_to"
+        )
+        .order_by(
+            "-created_at"
+        )
     )
 
     computers = (
@@ -156,23 +209,48 @@ def computer_list(request):
             Prefetch(
                 "maintenance_tasks",
                 queryset=active_tasks,
-                to_attr="open_maintenance_tasks",
+                to_attr=
+                "open_maintenance_tasks",
             )
         )
         .all()
-        .order_by("hostname")
+        .order_by(
+            "hostname"
+        )
     )
 
-    q = request.GET.get("q", "").strip()
-    state = request.GET.get("state", "").strip()
-    group = request.GET.get("group", "").strip()
+    q = request.GET.get(
+        "q",
+        "",
+    ).strip()
+
+    state = request.GET.get(
+        "state",
+        "",
+    ).strip()
+
+    group = request.GET.get(
+        "group",
+        "",
+    ).strip()
 
     if q:
         computers = computers.filter(
-            Q(hostname__icontains=q)
-            | Q(ip_address__icontains=q)
-            | Q(os_name__icontains=q)
-            | Q(group_name__icontains=q)
+            Q(
+                hostname__icontains=q
+            )
+            |
+            Q(
+                ip_address__icontains=q
+            )
+            |
+            Q(
+                os_name__icontains=q
+            )
+            |
+            Q(
+                group_name__icontains=q
+            )
         )
 
     if state:
@@ -187,13 +265,17 @@ def computer_list(request):
 
     groups = (
         WsusComputer.objects
-        .exclude(group_name="")
+        .exclude(
+            group_name=""
+        )
         .values_list(
             "group_name",
             flat=True,
         )
         .distinct()
-        .order_by("group_name")
+        .order_by(
+            "group_name"
+        )
     )
 
     paginator = Paginator(
@@ -202,10 +284,15 @@ def computer_list(request):
     )
 
     page = paginator.get_page(
-        request.GET.get("page")
+        request.GET.get(
+            "page"
+        )
     )
 
-    base_computers = WsusComputer.objects.all()
+    base_computers = (
+        WsusComputer.objects
+        .all()
+    )
 
     counts = {
         "total":
@@ -255,6 +342,7 @@ def computer_list(request):
 
 @login_required
 def activity_board(request):
+
     tasks = (
         WsusMaintenanceTask.objects
         .select_related(
@@ -293,19 +381,24 @@ def activity_board(request):
             Q(
                 computer__hostname__icontains=q
             )
-            | Q(
+            |
+            Q(
                 computer__ip_address__icontains=q
             )
-            | Q(
+            |
+            Q(
                 assigned_to__username__icontains=q
             )
-            | Q(
+            |
+            Q(
                 assigned_to__first_name__icontains=q
             )
-            | Q(
+            |
+            Q(
                 assigned_to__last_name__icontains=q
             )
-            | Q(
+            |
+            Q(
                 notes__icontains=q
             )
         )
@@ -317,6 +410,7 @@ def activity_board(request):
     }
 
     for task in tasks:
+
         if (
             task.status
             not in cards_by_status
@@ -327,11 +421,14 @@ def activity_board(request):
             task.status
         ].append(
             {
-                "task": task,
+                "task":
+                    task,
+
                 "start_input":
                     _datetime_input(
                         task.planned_start_at
                     ),
+
                 "end_input":
                     _datetime_input(
                         task.planned_end_at
@@ -342,6 +439,7 @@ def activity_board(request):
     columns = []
 
     for column in ACTIVITY_COLUMNS:
+
         cards = cards_by_status[
             column["key"]
         ]
@@ -349,8 +447,10 @@ def activity_board(request):
         columns.append(
             {
                 **column,
-                "cards": cards,
-                "count": len(cards),
+                "cards":
+                    cards,
+                "count":
+                    len(cards),
             }
         )
 
@@ -402,9 +502,12 @@ def task_create(
     request,
     computer_id,
 ):
+
     computer = get_object_or_404(
         WsusComputer.objects
-        .select_related("server"),
+        .select_related(
+            "server"
+        ),
         pk=computer_id,
     )
 
@@ -415,11 +518,14 @@ def task_create(
             status__in=
             _active_task_statuses(),
         )
-        .order_by("-created_at")
+        .order_by(
+            "-created_at"
+        )
         .first()
     )
 
     if existing:
+
         messages.warning(
             request,
             (
@@ -441,11 +547,13 @@ def task_create(
     )
 
     if not form.is_valid():
+
         messages.error(
             request,
             (
                 "Não foi possível criar "
-                "a atividade WSUS. Revise os campos."
+                "a atividade WSUS. "
+                "Revise os campos."
             ),
         )
 
@@ -468,7 +576,9 @@ def task_create(
         ==
         WsusMaintenanceTask.STATUS_COMPLETED
     ):
-        task.completed_at = timezone.now()
+        task.completed_at = (
+            timezone.now()
+        )
 
     task.save()
 
@@ -517,6 +627,7 @@ def task_update(
     request,
     pk,
 ):
+
     task = get_object_or_404(
         WsusMaintenanceTask.objects
         .select_for_update()
@@ -561,11 +672,13 @@ def task_update(
     )
 
     if not form.is_valid():
+
         messages.error(
             request,
             (
                 "Não foi possível atualizar "
-                "a atividade WSUS. Revise os campos."
+                "a atividade WSUS. "
+                "Revise os campos."
             ),
         )
 
@@ -584,10 +697,12 @@ def task_update(
         ==
         WsusMaintenanceTask.STATUS_COMPLETED
     ):
+
         if not task.completed_at:
             task.completed_at = (
                 timezone.now()
             )
+
     else:
         task.completed_at = None
 
@@ -600,6 +715,7 @@ def task_update(
         !=
         task.assigned_to_id
     ):
+
         events.append(
             (
                 "ASSIGNMENT_CHANGED",
@@ -617,6 +733,7 @@ def task_update(
         !=
         task.priority
     ):
+
         events.append(
             (
                 "PRIORITY_CHANGED",
@@ -634,6 +751,7 @@ def task_update(
         !=
         task.status
     ):
+
         labels = dict(
             WsusMaintenanceTask.STATUS_CHOICES
         )
@@ -655,6 +773,7 @@ def task_update(
         !=
         task.planned_start_at
     ):
+
         events.append(
             (
                 "START_CHANGED",
@@ -672,6 +791,7 @@ def task_update(
         !=
         task.planned_end_at
     ):
+
         events.append(
             (
                 "END_CHANGED",
@@ -689,6 +809,7 @@ def task_update(
         !=
         task.allow_reboot
     ):
+
         events.append(
             (
                 "REBOOT_CHANGED",
@@ -704,6 +825,7 @@ def task_update(
         !=
         task.notes
     ):
+
         events.append(
             (
                 "NOTES_CHANGED",
@@ -718,6 +840,7 @@ def task_update(
         event_type,
         description,
     ) in events:
+
         WsusMaintenanceEvent.objects.create(
             task=task,
             event_type=event_type,
@@ -726,6 +849,7 @@ def task_update(
         )
 
     if events:
+
         messages.success(
             request,
             (
@@ -733,7 +857,9 @@ def task_update(
                 "atualizada com sucesso."
             ),
         )
+
     else:
+
         messages.info(
             request,
             (
@@ -747,4 +873,137 @@ def task_update(
         _safe_redirect_target(
             request
         )
+    )
+
+
+@login_required
+@require_GET
+def task_history(
+    request,
+    pk,
+):
+
+    task = get_object_or_404(
+        WsusMaintenanceTask.objects
+        .select_related(
+            "computer",
+            "computer__server",
+            "assigned_to",
+        ),
+        pk=pk,
+    )
+
+    events = (
+        task.timeline
+        .select_related(
+            "actor"
+        )
+        .all()
+        .order_by(
+            "-created_at"
+        )
+    )
+
+    event_items = []
+
+    for event in events:
+
+        event_items.append(
+            {
+                "id":
+                    event.id,
+
+                "type":
+                    event.event_type,
+
+                "label":
+                    EVENT_LABELS.get(
+                        event.event_type,
+                        event.event_type,
+                    ),
+
+                "tone":
+                    EVENT_TONES.get(
+                        event.event_type,
+                        "secondary",
+                    ),
+
+                "description":
+                    event.description,
+
+                "actor":
+                    _user_display(
+                        event.actor
+                    )
+                    if event.actor
+                    else "Sistema",
+
+                "created_at":
+                    _format_datetime(
+                        event.created_at
+                    ),
+            }
+        )
+
+    return JsonResponse(
+        {
+            "ok": True,
+
+            "task": {
+                "id":
+                    task.id,
+
+                "hostname":
+                    task.computer.hostname,
+
+                "ip":
+                    (
+                        task.computer.ip_address
+                        or ""
+                    ),
+
+                "group":
+                    (
+                        task.computer.group_name
+                        or ""
+                    ),
+
+                "priority":
+                    task.priority,
+
+                "status":
+                    task.get_status_display(),
+
+                "assigned_to":
+                    _user_display(
+                        task.assigned_to
+                    ),
+
+                "planned_start_at":
+                    _format_datetime(
+                        task.planned_start_at
+                    ),
+
+                "planned_end_at":
+                    _format_datetime(
+                        task.planned_end_at
+                    ),
+
+                "allow_reboot":
+                    task.allow_reboot,
+
+                "completed_at":
+                    _format_datetime(
+                        task.completed_at
+                    )
+                    if task.completed_at
+                    else "",
+
+                "notes":
+                    task.notes,
+            },
+
+            "events":
+                event_items,
+        }
     )

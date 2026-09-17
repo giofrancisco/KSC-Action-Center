@@ -1,0 +1,198 @@
+<div
+    class="modal fade"
+    id="wsusTaskHistoryModal"
+    tabindex="-1"
+    aria-labelledby="wsusTaskHistoryModalLabel"
+    aria-hidden="true"
+>
+    <div
+        class="
+            modal-dialog
+            modal-dialog-centered
+            modal-dialog-scrollable
+            modal-xl
+        "
+    >
+
+        <div class="modal-content wsus-history-modal">
+
+            <div class="modal-header">
+
+                <div>
+
+                    <div class="wsus-modal-eyebrow">
+                        WSUS
+                    </div>
+
+                    <h2
+                        class="modal-title h5 mb-0"
+                        id="wsusTaskHistoryModalLabel"
+                    >
+                        Histórico da atividade
+                    </h2>
+
+                    <div
+                        id="wsusHistoryComputerInfo"
+                        class="wsus-modal-computer"
+                    ></div>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Fechar"
+                ></button>
+
+            </div>
+
+
+            <div class="modal-body">
+
+                <div
+                    id="wsusHistoryLoading"
+                    class="wsus-history-loading"
+                >
+                    Carregando histórico...
+                </div>
+
+
+                <div
+                    id="wsusHistoryError"
+                    class="alert alert-danger d-none"
+                ></div>
+
+
+                <div
+                    id="wsusHistoryContent"
+                    class="d-none"
+                >
+
+                    <div class="wsus-history-summary">
+
+                        <div class="wsus-history-summary-item">
+                            <div class="wsus-history-summary-label">
+                                Criticidade
+                            </div>
+                            <div
+                                id="wsusHistoryPriority"
+                                class="wsus-history-summary-value"
+                            ></div>
+                        </div>
+
+
+                        <div class="wsus-history-summary-item">
+                            <div class="wsus-history-summary-label">
+                                Status
+                            </div>
+                            <div
+                                id="wsusHistoryStatus"
+                                class="wsus-history-summary-value"
+                            ></div>
+                        </div>
+
+
+                        <div class="wsus-history-summary-item">
+                            <div class="wsus-history-summary-label">
+                                Responsável
+                            </div>
+                            <div
+                                id="wsusHistoryAssignedTo"
+                                class="wsus-history-summary-value"
+                            ></div>
+                        </div>
+
+
+                        <div class="wsus-history-summary-item">
+                            <div class="wsus-history-summary-label">
+                                Reboot permitido
+                            </div>
+                            <div
+                                id="wsusHistoryReboot"
+                                class="wsus-history-summary-value"
+                            ></div>
+                        </div>
+
+
+                        <div class="wsus-history-summary-item">
+                            <div class="wsus-history-summary-label">
+                                Início previsto
+                            </div>
+                            <div
+                                id="wsusHistoryStartAt"
+                                class="wsus-history-summary-value"
+                            ></div>
+                        </div>
+
+
+                        <div class="wsus-history-summary-item">
+                            <div class="wsus-history-summary-label">
+                                Fim previsto
+                            </div>
+                            <div
+                                id="wsusHistoryEndAt"
+                                class="wsus-history-summary-value"
+                            ></div>
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="wsusHistoryNotesBlock"
+                        class="wsus-history-notes-block d-none"
+                    >
+
+                        <div class="wsus-history-section-title">
+                            Observações atuais
+                        </div>
+
+                        <div
+                            id="wsusHistoryNotes"
+                            class="wsus-history-current-notes"
+                        ></div>
+
+                    </div>
+
+
+                    <div class="wsus-history-section-title mt-4">
+                        Timeline
+                    </div>
+
+
+                    <div
+                        id="wsusHistoryTimeline"
+                        class="wsus-history-timeline"
+                    ></div>
+
+
+                    <div
+                        id="wsusHistoryEmpty"
+                        class="wsus-history-empty d-none"
+                    >
+                        Nenhum evento registrado para esta atividade.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    data-bs-dismiss="modal"
+                >
+                    Fechar
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
