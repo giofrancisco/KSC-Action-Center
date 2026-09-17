@@ -1,0 +1,501 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+
+{% block title %}
+WSUS - Computadores
+{% endblock %}
+
+
+{% block extra_head %}
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/wsus-module.css' %}?v=1"
+>
+
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="wsus-page-header">
+
+
+    <div>
+
+
+        <div class="wsus-eyebrow">
+
+            Windows Server Update Services
+
+        </div>
+
+
+        <h1 class="wsus-page-title">
+
+            Computadores
+
+        </h1>
+
+
+        <p class="wsus-page-subtitle">
+
+            Inventário e conformidade dos equipamentos
+            reportados pelo WSUS.
+
+        </p>
+
+
+    </div>
+
+
+    <a
+        href="{% url 'wsus:activities' %}"
+        class="btn btn-sm btn-outline-info"
+    >
+
+        Ver atividades
+
+    </a>
+
+
+</div>
+
+
+
+<div class="wsus-kpi-grid">
+
+
+    <div class="wsus-kpi">
+
+        <div class="wsus-kpi-label">
+            Computadores
+        </div>
+
+        <div class="wsus-kpi-value text-info">
+            {{ counts.total }}
+        </div>
+
+    </div>
+
+
+    <div class="wsus-kpi">
+
+        <div class="wsus-kpi-label">
+            Atualizados
+        </div>
+
+        <div class="wsus-kpi-value text-success">
+            {{ counts.updated }}
+        </div>
+
+    </div>
+
+
+    <div class="wsus-kpi">
+
+        <div class="wsus-kpi-label">
+            Pendentes
+        </div>
+
+        <div class="wsus-kpi-value text-warning">
+            {{ counts.pending }}
+        </div>
+
+    </div>
+
+
+    <div class="wsus-kpi">
+
+        <div class="wsus-kpi-label">
+            Com falha
+        </div>
+
+        <div class="wsus-kpi-value text-danger">
+            {{ counts.failed }}
+        </div>
+
+    </div>
+
+
+    <div class="wsus-kpi">
+
+        <div class="wsus-kpi-label">
+            Reboot pendente
+        </div>
+
+        <div class="wsus-kpi-value text-warning">
+            {{ counts.reboot }}
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+<form
+    method="get"
+    class="wsus-filter-panel"
+>
+
+
+    <div class="row g-2">
+
+
+        <div class="col-12 col-xl">
+
+
+            <input
+                type="text"
+                name="q"
+                value="{{ q }}"
+                class="form-control"
+                placeholder="Buscar hostname, IP, sistema operacional ou grupo..."
+            >
+
+
+        </div>
+
+
+        <div class="col-12 col-md-4 col-xl-2">
+
+
+            <select
+                name="state"
+                class="form-select"
+            >
+
+
+                <option value="">
+
+                    Todas as situações
+
+                </option>
+
+
+                {% for value, label in state_choices %}
+
+
+                    <option
+                        value="{{ value }}"
+                        {% if state == value %}
+                            selected
+                        {% endif %}
+                    >
+
+                        {{ label }}
+
+                    </option>
+
+
+                {% endfor %}
+
+
+            </select>
+
+
+        </div>
+
+
+        <div class="col-12 col-md-4 col-xl-3">
+
+
+            <select
+                name="group"
+                class="form-select"
+            >
+
+
+                <option value="">
+
+                    Todos os grupos
+
+                </option>
+
+
+                {% for item in groups %}
+
+
+                    <option
+                        value="{{ item }}"
+                        {% if group == item %}
+                            selected
+                        {% endif %}
+                    >
+
+                        {{ item }}
+
+                    </option>
+
+
+                {% endfor %}
+
+
+            </select>
+
+
+        </div>
+
+
+        <div class="col-12 col-md-auto">
+
+
+            <button
+                type="submit"
+                class="btn btn-info w-100"
+            >
+
+                Filtrar
+
+            </button>
+
+
+        </div>
+
+
+        <div class="col-12 col-md-auto">
+
+
+            <a
+                href="{% url 'wsus:computers' %}"
+                class="btn btn-outline-secondary w-100"
+            >
+
+                Limpar
+
+            </a>
+
+
+        </div>
+
+
+    </div>
+
+
+</form>
+
+
+
+<div class="wsus-table-panel">
+
+
+    <div class="table-responsive">
+
+
+        <table
+            class="
+                table
+                table-dark
+                table-hover
+                align-middle
+                mb-0
+            "
+        >
+
+
+            <thead>
+
+
+                <tr>
+
+                    <th>Situação</th>
+
+                    <th>Computador</th>
+
+                    <th>IP</th>
+
+                    <th>Sistema operacional</th>
+
+                    <th>Grupo</th>
+
+                    <th>Pendentes</th>
+
+                    <th>Falhas</th>
+
+                    <th>Reboot</th>
+
+                    <th>Último report</th>
+
+                </tr>
+
+
+            </thead>
+
+
+            <tbody>
+
+
+                {% for computer in page %}
+
+
+                    <tr>
+
+
+                        <td>
+
+
+                            {% if computer.update_state == "UPDATED" %}
+
+                                <span class="badge text-bg-success">
+                                    Atualizado
+                                </span>
+
+                            {% elif computer.update_state == "FAILED" %}
+
+                                <span class="badge text-bg-danger">
+                                    Falha
+                                </span>
+
+                            {% elif computer.update_state == "REBOOT" %}
+
+                                <span class="badge text-bg-warning">
+                                    Reboot
+                                </span>
+
+                            {% elif computer.update_state == "PENDING" %}
+
+                                <span class="badge text-bg-warning">
+                                    Pendente
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge text-bg-secondary">
+                                    Desconhecido
+                                </span>
+
+                            {% endif %}
+
+
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+                                {{ computer.hostname }}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            {{ computer.ip_address|default:"—" }}
+
+                        </td>
+
+
+                        <td>
+
+                            {{ computer.os_name|default:"—" }}
+
+                        </td>
+
+
+                        <td>
+
+                            {{ computer.group_name|default:"—" }}
+
+                        </td>
+
+
+                        <td>
+
+                            {{ computer.needed_count }}
+
+                        </td>
+
+
+                        <td>
+
+                            {{ computer.failed_count }}
+
+                        </td>
+
+
+                        <td>
+
+
+                            {% if computer.reboot_pending %}
+
+                                <span class="text-warning fw-bold">
+                                    Sim
+                                </span>
+
+                            {% else %}
+
+                                <span class="text-secondary">
+                                    Não
+                                </span>
+
+                            {% endif %}
+
+
+                        </td>
+
+
+                        <td>
+
+
+                            {% if computer.last_report_at %}
+
+                                {{ computer.last_report_at|date:"d/m/Y H:i" }}
+
+                            {% else %}
+
+                                —
+
+                            {% endif %}
+
+
+                        </td>
+
+
+                    </tr>
+
+
+                {% empty %}
+
+
+                    <tr>
+
+
+                        <td
+                            colspan="9"
+                            class="
+                                text-center
+                                text-secondary
+                                py-5
+                            "
+                        >
+
+                            Nenhum computador encontrado.
+
+                        </td>
+
+
+                    </tr>
+
+
+                {% endfor %}
+
+
+            </tbody>
+
+
+        </table>
+
+
+    </div>
+
+
+</div>
+
+
+{% endblock %}

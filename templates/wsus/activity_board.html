@@ -1,0 +1,617 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+
+{% block title %}
+WSUS - Atividades
+{% endblock %}
+
+
+{% block extra_head %}
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/wsus-module.css' %}?v=1"
+>
+
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="wsus-page-header">
+
+
+    <div>
+
+
+        <div class="wsus-eyebrow">
+
+            Windows Server Update Services
+
+        </div>
+
+
+        <h1 class="wsus-page-title">
+
+            Atividades
+
+        </h1>
+
+
+        <p class="wsus-page-subtitle">
+
+            Acompanhamento operacional da execução das atualizações.
+
+        </p>
+
+
+    </div>
+
+
+    <a
+        href="{% url 'wsus:computers' %}"
+        class="btn btn-sm btn-outline-info"
+    >
+
+        Ver computadores
+
+    </a>
+
+
+</div>
+
+
+
+<div class="row g-3 mb-3">
+
+
+    <div class="col-6 col-lg-3">
+
+
+        <div class="metric-card">
+
+
+            <div class="metric-label">
+
+                Atividades
+
+            </div>
+
+
+            <div class="metric-value">
+
+                {{ counts.total }}
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+    <div class="col-6 col-lg-3">
+
+
+        <div class="metric-card">
+
+
+            <div class="metric-label">
+
+                P0
+
+            </div>
+
+
+            <div class="metric-value text-danger">
+
+                {{ counts.p0 }}
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+    <div class="col-6 col-lg-3">
+
+
+        <div class="metric-card">
+
+
+            <div class="metric-label">
+
+                P1
+
+            </div>
+
+
+            <div class="metric-value text-warning">
+
+                {{ counts.p1 }}
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+    <div class="col-6 col-lg-3">
+
+
+        <div class="metric-card">
+
+
+            <div class="metric-label">
+
+                P2
+
+            </div>
+
+
+            <div class="metric-value text-info">
+
+                {{ counts.p2 }}
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+
+<form
+    method="get"
+    class="wsus-filter-panel"
+>
+
+
+    <div class="row g-2">
+
+
+        <div class="col-12 col-lg">
+
+
+            <input
+                type="text"
+                name="q"
+                value="{{ q }}"
+                class="form-control"
+                placeholder="Buscar computador, IP, responsável ou observação..."
+            >
+
+
+        </div>
+
+
+        <div class="col-12 col-md-5 col-lg-3">
+
+
+            <select
+                name="priority"
+                class="form-select"
+            >
+
+
+                <option value="">
+
+                    Todas as criticidades
+
+                </option>
+
+
+                <option
+                    value="P0"
+                    {% if priority == "P0" %}
+                        selected
+                    {% endif %}
+                >
+
+                    P0 - Crítica
+
+                </option>
+
+
+                <option
+                    value="P1"
+                    {% if priority == "P1" %}
+                        selected
+                    {% endif %}
+                >
+
+                    P1 - Alta
+
+                </option>
+
+
+                <option
+                    value="P2"
+                    {% if priority == "P2" %}
+                        selected
+                    {% endif %}
+                >
+
+                    P2 - Operacional
+
+                </option>
+
+
+            </select>
+
+
+        </div>
+
+
+        <div class="col-12 col-md-auto">
+
+
+            <button
+                type="submit"
+                class="btn btn-info w-100"
+            >
+
+                Filtrar
+
+            </button>
+
+
+        </div>
+
+
+        <div class="col-12 col-md-auto">
+
+
+            <a
+                href="{% url 'wsus:activities' %}"
+                class="btn btn-outline-secondary w-100"
+            >
+
+                Limpar
+
+            </a>
+
+
+        </div>
+
+
+    </div>
+
+
+</form>
+
+
+
+<div class="wsus-board-wrapper">
+
+
+    <div class="wsus-board">
+
+
+        {% for column in columns %}
+
+
+            <section class="wsus-column">
+
+
+                <div class="wsus-column-header">
+
+
+                    <div>
+
+
+                        <div class="wsus-column-title">
+
+                            {{ column.label }}
+
+                        </div>
+
+
+                        <div class="wsus-column-description">
+
+                            {{ column.description }}
+
+                        </div>
+
+
+                    </div>
+
+
+                    <span class="wsus-column-count">
+
+                        {{ column.count }}
+
+                    </span>
+
+
+                </div>
+
+
+                <div class="wsus-column-body">
+
+
+                    {% for task in column.cards %}
+
+
+                        <article
+                            class="
+                                wsus-task-card
+                                priority-{{ task.priority|lower }}
+                            "
+                        >
+
+
+                            <div
+                                class="
+                                    d-flex
+                                    justify-content-between
+                                    align-items-center
+                                    gap-2
+                                "
+                            >
+
+
+                                {% if task.priority == "P0" %}
+
+                                    <span class="badge text-bg-danger">
+                                        P0
+                                    </span>
+
+                                {% elif task.priority == "P1" %}
+
+                                    <span class="badge text-bg-warning">
+                                        P1
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge text-bg-info">
+                                        P2
+                                    </span>
+
+                                {% endif %}
+
+
+                                <span class="small text-secondary">
+
+                                    #{{ task.id }}
+
+                                </span>
+
+
+                            </div>
+
+
+
+                            <div class="wsus-task-hostname">
+
+                                {{ task.computer.hostname }}
+
+                            </div>
+
+
+                            <div class="wsus-task-ip">
+
+                                {{ task.computer.ip_address|default:"Sem IP" }}
+
+                            </div>
+
+
+
+                            <div class="wsus-task-info">
+
+
+                                <div>
+
+
+                                    <div class="wsus-task-label">
+
+                                        Pendentes
+
+                                    </div>
+
+
+                                    <div class="wsus-task-value">
+
+                                        {{ task.computer.needed_count }}
+
+                                    </div>
+
+
+                                </div>
+
+
+                                <div>
+
+
+                                    <div class="wsus-task-label">
+
+                                        Falhas
+
+                                    </div>
+
+
+                                    <div class="wsus-task-value">
+
+                                        {{ task.computer.failed_count }}
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+
+
+
+                            <div class="wsus-task-block">
+
+
+                                <div class="wsus-task-label">
+
+                                    Responsável
+
+                                </div>
+
+
+                                <div class="wsus-task-value">
+
+
+                                    {% if task.assigned_to %}
+
+                                        {{ task.assigned_to.username }}
+
+                                    {% else %}
+
+                                        Não atribuído
+
+                                    {% endif %}
+
+
+                                </div>
+
+
+                            </div>
+
+
+
+                            <div class="wsus-task-block">
+
+
+                                <div class="wsus-task-label">
+
+                                    Início previsto
+
+                                </div>
+
+
+                                <div class="wsus-task-value">
+
+
+                                    {% if task.planned_start_at %}
+
+                                        {{ task.planned_start_at|date:"d/m/Y H:i" }}
+
+                                    {% else %}
+
+                                        Não definido
+
+                                    {% endif %}
+
+
+                                </div>
+
+
+                            </div>
+
+
+
+                            <div class="wsus-task-block">
+
+
+                                <div class="wsus-task-label">
+
+                                    Fim previsto
+
+                                </div>
+
+
+                                <div class="wsus-task-value">
+
+
+                                    {% if task.planned_end_at %}
+
+                                        {{ task.planned_end_at|date:"d/m/Y H:i" }}
+
+                                    {% else %}
+
+                                        Não definido
+
+                                    {% endif %}
+
+
+                                </div>
+
+
+                            </div>
+
+
+
+                            <div class="wsus-task-block">
+
+
+                                <div class="wsus-task-label">
+
+                                    Reboot permitido
+
+                                </div>
+
+
+                                <div class="wsus-task-value">
+
+
+                                    {% if task.allow_reboot %}
+
+                                        Sim
+
+                                    {% else %}
+
+                                        Não
+
+                                    {% endif %}
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </article>
+
+
+                    {% empty %}
+
+
+                        <div class="wsus-empty">
+
+                            Nenhuma atividade.
+
+                        </div>
+
+
+                    {% endfor %}
+
+
+                </div>
+
+
+            </section>
+
+
+        {% endfor %}
+
+
+    </div>
+
+
+</div>
+
+
+{% endblock %}
