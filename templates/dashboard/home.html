@@ -11,7 +11,10 @@ Infrastructure Action Center
 
 {% block extra_head %}
 
-<link rel="stylesheet" href="{% static 'css/infrastructure-dashboard.css' %}?v=1">
+<link
+    rel="stylesheet"
+    href="{% static 'css/infrastructure-dashboard.css' %}?v=2"
+>
 
 {% endblock %}
 
@@ -23,7 +26,6 @@ Infrastructure Action Center
 
 
 <div class="infrastructure-home">
-
 
     <div class="infrastructure-hero">
 
@@ -53,13 +55,9 @@ Infrastructure Action Center
             <div class="infrastructure-context-value">
 
                 {% if customer %}
-
-                {{ customer.name }}
-
+                    {{ customer.name }}
                 {% else %}
-
-                Nenhum cliente selecionado
-
+                    BONJA - AMBIENTE FICTÍCIO
                 {% endif %}
 
             </div>
@@ -69,19 +67,28 @@ Infrastructure Action Center
     </div>
 
 
+    <div
+        id="iacDashboardData"
+        class="d-none"
+        data-ksc-total="{% firstof total_endpoints endpoints_total endpoint_count '0' %}"
+        data-ksc-ok="{% firstof ok_count protected_count protected_endpoints '0' %}"
+        data-ksc-critical="{% firstof critical_count critical_endpoints '0' %}"
+        data-ksc-warning="{% firstof warning_count warning_endpoints '0' %}"
+        data-ksc-unknown="{% firstof unknown_count unknown_endpoints '0' %}"
+        data-wsus-updated="{{ wsus.updated|default:0 }}"
+        data-wsus-pending="{{ wsus.pending|default:0 }}"
+        data-wsus-failed="{{ wsus.failed|default:0 }}"
+        data-wsus-reboot="{{ wsus.reboot|default:0 }}"
+        data-wsus-unknown="{{ wsus.unknown|default:0 }}"
+    ></div>
+
 
     <div class="platform-grid">
 
 
-        <!-- =====================================================
-             KASPERSKY
-             ===================================================== -->
-
         <section class="platform-window platform-ksc">
 
-
             <div class="platform-header">
-
 
                 <div class="platform-identification">
 
@@ -90,7 +97,6 @@ Infrastructure Action Center
                     </div>
 
                     <div>
-
                         <div class="platform-name">
                             Kaspersky Security Center
                         </div>
@@ -98,7 +104,6 @@ Infrastructure Action Center
                         <div class="platform-description">
                             Endpoint Security & Protection
                         </div>
-
                     </div>
 
                 </div>
@@ -106,150 +111,92 @@ Infrastructure Action Center
 
                 <div class="platform-sync">
 
-                    <div>
+                    <div class="platform-sync-label">
                         Última sincronização
                     </div>
 
-                    <div>
+                    <div class="platform-sync-value">
 
                         {% if last_sync %}
 
-                        {% if last_sync.finished_at %}
-
-                        {{ last_sync.finished_at|date:"d/m/Y H:i:s" }}
-
-                        {% elif last_sync.started_at %}
-
-                        {{ last_sync.started_at|date:"d/m/Y H:i:s" }}
-
-                        {% else %}
-
-                        —
-
-                        {% endif %}
+                            {% if last_sync.finished_at %}
+                                {{ last_sync.finished_at|date:"d/m/Y H:i:s" }}
+                            {% elif last_sync.started_at %}
+                                {{ last_sync.started_at|date:"d/m/Y H:i:s" }}
+                            {% else %}
+                                —
+                            {% endif %}
 
                         {% else %}
-
-                        —
-
+                            —
                         {% endif %}
 
                     </div>
-
 
                     {% if last_sync %}
 
-                    <div>
+                        <div>
 
-                        {% if last_sync.status == "SUCCESS" %}
+                            {% if last_sync.status == "SUCCESS" %}
+                                <span class="text-success fw-bold">Sucesso</span>
+                            {% elif last_sync.status == "FAILED" %}
+                                <span class="text-danger fw-bold">Falha</span>
+                            {% elif last_sync.status == "RUNNING" %}
+                                <span class="text-warning fw-bold">Em execução</span>
+                            {% else %}
+                                {{ last_sync.status }}
+                            {% endif %}
 
-                        <span class="text-success">
-                            Sucesso
-                        </span>
-
-                        {% elif last_sync.status == "FAILED" %}
-
-                        <span class="text-danger">
-                            Falha
-                        </span>
-
-                        {% elif last_sync.status == "RUNNING" %}
-
-                        <span class="text-warning">
-                            Em execução
-                        </span>
-
-                        {% else %}
-
-                        {{ last_sync.status }}
-
-                        {% endif %}
-
-                    </div>
+                        </div>
 
                     {% endif %}
 
                 </div>
 
-
             </div>
-
 
 
             <div class="platform-metrics">
 
-
                 <div class="platform-metric">
-
-                    <div class="platform-metric-label">
-                        Endpoints
-                    </div>
-
+                    <div class="platform-metric-label">Endpoints</div>
                     <div class="platform-metric-value metric-info">
-                        {{ total_endpoints|default:0 }}
+                        {% firstof total_endpoints endpoints_total endpoint_count "0" %}
                     </div>
-
                 </div>
 
-
                 <div class="platform-metric">
-
-                    <div class="platform-metric-label">
-                        Protegidos / OK
-                    </div>
-
+                    <div class="platform-metric-label">Protegidos / OK</div>
                     <div class="platform-metric-value metric-success">
-                        {{ ok_count|default:0 }}
+                        {% firstof ok_count protected_count protected_endpoints "0" %}
                     </div>
-
                 </div>
 
-
                 <div class="platform-metric">
-
-                    <div class="platform-metric-label">
-                        Críticos
-                    </div>
-
+                    <div class="platform-metric-label">Críticos</div>
                     <div class="platform-metric-value metric-danger">
-                        {{ critical_count|default:0 }}
+                        {% firstof critical_count critical_endpoints "0" %}
                     </div>
-
                 </div>
 
-
                 <div class="platform-metric">
-
-                    <div class="platform-metric-label">
-                        Avisos
-                    </div>
-
+                    <div class="platform-metric-label">Avisos</div>
                     <div class="platform-metric-value metric-warning">
-                        {{ warning_count|default:0 }}
+                        {% firstof warning_count warning_endpoints "0" %}
                     </div>
-
                 </div>
-
 
                 <div class="platform-metric">
-
-                    <div class="platform-metric-label">
-                        Problemas abertos
-                    </div>
-
+                    <div class="platform-metric-label">Problemas abertos</div>
                     <div class="platform-metric-value">
-                        {{ open_problems|default:0 }}
+                        {% firstof open_problems open_problem_count problem_counts.total counts.total "0" %}
                     </div>
-
                 </div>
-
 
             </div>
 
 
-
             <div class="platform-content">
-
 
                 <div class="platform-section">
 
@@ -258,13 +205,10 @@ Infrastructure Action Center
                     </div>
 
                     <div class="platform-chart">
-
                         <canvas id="kscStatusChart"></canvas>
-
                     </div>
 
                 </div>
-
 
 
                 <div class="platform-section">
@@ -273,98 +217,73 @@ Infrastructure Action Center
                         Plano de ação
                     </div>
 
-
                     <div class="operation-list">
 
-
                         <div class="operation-row">
-
-                            <span class="operation-label">
-                                P0 — Crítico
-                            </span>
-
+                            <span class="operation-label">P0 — Crítico</span>
                             <span class="operation-value text-danger">
-                                {{ p0|default:0 }}
+                                {% firstof p0 problem_counts.p0 counts.p0 "0" %}
                             </span>
-
                         </div>
 
-
                         <div class="operation-row">
-
-                            <span class="operation-label">
-                                P1 — Alta
-                            </span>
-
+                            <span class="operation-label">P1 — Alta</span>
                             <span class="operation-value text-warning">
-                                {{ p1|default:0 }}
+                                {% firstof p1 problem_counts.p1 counts.p1 "0" %}
                             </span>
-
                         </div>
-
 
                         <div class="operation-row">
-
-                            <span class="operation-label">
-                                P2 — Operacional
-                            </span>
-
+                            <span class="operation-label">P2 — Operacional</span>
                             <span class="operation-value text-info">
-                                {{ p2|default:0 }}
+                                {% firstof p2 problem_counts.p2 counts.p2 "0" %}
                             </span>
-
                         </div>
 
+                    </div>
 
+                    <div class="platform-summary-note">
+                        Acompanhe problemas identificados, responsáveis,
+                        prioridade e evolução das atividades de remediação.
                     </div>
 
                 </div>
 
-
             </div>
-
 
 
             <div class="platform-footer">
 
-
                 <div class="platform-footer-text">
-
-                    Segurança de endpoints,
-                    proteção e plano de remediação.
-
+                    Segurança de endpoints e plano de remediação.
                 </div>
-
 
                 <div class="d-flex flex-wrap gap-2">
 
-                    <a href="{% url 'inventory:list' %}" class="btn btn-sm btn-outline-info">
+                    <a
+                        href="{% url 'inventory:list' %}"
+                        class="btn btn-sm btn-outline-info"
+                    >
                         Ver endpoints
                     </a>
 
-                    <a href="{% url 'actionplan:board' %}" class="btn btn-sm btn-info">
+                    <a
+                        href="{% url 'actionplan:board' %}"
+                        class="btn btn-sm btn-info"
+                    >
                         Ver problemas
                     </a>
 
                 </div>
 
-
             </div>
-
 
         </section>
 
 
-
-        <!-- =====================================================
-             WSUS
-             ===================================================== -->
-
         <section class="platform-window platform-wsus">
 
-
             <div class="platform-header">
-
 
                 <div class="platform-identification">
 
@@ -373,7 +292,6 @@ Infrastructure Action Center
                     </div>
 
                     <div>
-
                         <div class="platform-name">
                             Windows Server Update Services
                         </div>
@@ -381,7 +299,6 @@ Infrastructure Action Center
                         <div class="platform-description">
                             Patch Management & Update Compliance
                         </div>
-
                     </div>
 
                 </div>
@@ -391,502 +308,327 @@ Infrastructure Action Center
 
                     {% if wsus.available %}
 
-                    <div>
-                        {{ wsus.server_name }}
-                    </div>
+                        <div class="platform-sync-label">
+                            {{ wsus.server_name }}
+                        </div>
 
-                    <div>
-                        {{ wsus.hostname }}:{{ wsus.port }}
-                    </div>
+                        <div class="platform-sync-value">
+                            {{ wsus.hostname }}:{{ wsus.port }}
+                        </div>
 
-                    <div>
-
-                        {% if wsus.last_sync_at %}
-
-                        {{ wsus.last_sync_at|date:"d/m/Y H:i:s" }}
-
-                        {% else %}
-
-                        Sem coleta
-
-                        {% endif %}
-
-                    </div>
+                        <div>
+                            {% if wsus.last_sync_at %}
+                                {{ wsus.last_sync_at|date:"d/m/Y H:i:s" }}
+                            {% else %}
+                                Sem coleta
+                            {% endif %}
+                        </div>
 
                     {% else %}
 
-                    <div>
-                        WSUS não configurado
-                    </div>
+                        <div>
+                            WSUS não configurado
+                        </div>
 
                     {% endif %}
 
                 </div>
 
-
             </div>
-
 
 
             {% if wsus.available %}
 
+                <div class="platform-metrics">
 
-            <div class="platform-metrics">
-
-
-                <div class="platform-metric">
-
-                    <div class="platform-metric-label">
-                        Computadores
+                    <div class="platform-metric">
+                        <div class="platform-metric-label">Computadores</div>
+                        <div class="platform-metric-value metric-blue">
+                            {{ wsus.total }}
+                        </div>
                     </div>
 
-                    <div class="platform-metric-value metric-blue">
-                        {{ wsus.total }}
+                    <div class="platform-metric">
+                        <div class="platform-metric-label">Atualizados</div>
+                        <div class="platform-metric-value metric-success">
+                            {{ wsus.updated }}
+                        </div>
                     </div>
 
-                </div>
-
-
-                <div class="platform-metric">
-
-                    <div class="platform-metric-label">
-                        Atualizados
+                    <div class="platform-metric">
+                        <div class="platform-metric-label">Pendentes</div>
+                        <div class="platform-metric-value metric-warning">
+                            {{ wsus.pending }}
+                        </div>
                     </div>
 
-                    <div class="platform-metric-value metric-success">
-                        {{ wsus.updated }}
+                    <div class="platform-metric">
+                        <div class="platform-metric-label">Com falha</div>
+                        <div class="platform-metric-value metric-danger">
+                            {{ wsus.failed }}
+                        </div>
                     </div>
 
-                </div>
-
-
-                <div class="platform-metric">
-
-                    <div class="platform-metric-label">
-                        Pendentes
-                    </div>
-
-                    <div class="platform-metric-value metric-warning">
-                        {{ wsus.pending }}
+                    <div class="platform-metric">
+                        <div class="platform-metric-label">Reboot pendente</div>
+                        <div class="platform-metric-value metric-warning">
+                            {{ wsus.reboot }}
+                        </div>
                     </div>
 
                 </div>
 
 
-                <div class="platform-metric">
+                <div class="platform-content">
 
-                    <div class="platform-metric-label">
-                        Com falha
-                    </div>
+                    <div class="platform-section">
 
-                    <div class="platform-metric-value metric-danger">
-                        {{ wsus.failed }}
-                    </div>
+                        <div class="platform-section-title">
+                            Status de atualização
+                        </div>
 
-                </div>
-
-
-                <div class="platform-metric">
-
-                    <div class="platform-metric-label">
-                        Reboot pendente
-                    </div>
-
-                    <div class="platform-metric-value metric-warning">
-                        {{ wsus.reboot }}
-                    </div>
-
-                </div>
-
-
-            </div>
-
-
-
-            <div class="platform-content">
-
-
-                <div class="platform-section">
-
-                    <div class="platform-section-title">
-                        Status de atualização
-                    </div>
-
-
-                    <div class="platform-chart">
-
-                        <canvas id="wsusStatusChart"></canvas>
+                        <div class="platform-chart">
+                            <canvas id="wsusStatusChart"></canvas>
+                        </div>
 
                     </div>
 
-                </div>
 
+                    <div class="platform-section">
 
+                        <div class="platform-section-title">
+                            Execução operacional
+                        </div>
 
-                <div class="platform-section">
+                        <div class="operation-list">
 
+                            <div class="operation-row">
+                                <span class="operation-label">Atividades abertas</span>
+                                <span class="operation-value">{{ wsus.open_tasks }}</span>
+                            </div>
 
-                    <div class="platform-section-title">
-                        Execução operacional
-                    </div>
+                            <div class="operation-row">
+                                <span class="operation-label">Pendentes</span>
+                                <span class="operation-value">{{ wsus.pending_tasks }}</span>
+                            </div>
 
+                            <div class="operation-row">
+                                <span class="operation-label">Agendadas</span>
+                                <span class="operation-value metric-blue">{{ wsus.scheduled_tasks }}</span>
+                            </div>
 
-                    <div class="operation-list">
+                            <div class="operation-row">
+                                <span class="operation-label">Em execução</span>
+                                <span class="operation-value text-info">{{ wsus.in_progress_tasks }}</span>
+                            </div>
 
+                            <div class="operation-row">
+                                <span class="operation-label">Aguardando reboot</span>
+                                <span class="operation-value text-warning">{{ wsus.reboot_tasks }}</span>
+                            </div>
 
-                        <div class="operation-row">
+                            <div class="operation-row">
+                                <span class="operation-label">Validação</span>
+                                <span class="operation-value">{{ wsus.validation_tasks }}</span>
+                            </div>
 
-                            <span class="operation-label">
-                                Atividades abertas
-                            </span>
-
-                            <span class="operation-value">
-                                {{ wsus.open_tasks }}
-                            </span>
+                            <div class="operation-row">
+                                <span class="operation-label">Bloqueadas</span>
+                                <span class="operation-value text-danger">{{ wsus.blocked_tasks }}</span>
+                            </div>
 
                         </div>
 
-
-                        <div class="operation-row">
-
-                            <span class="operation-label">
-                                Agendado
-                            </span>
-
-                            <span class="operation-value">
-                                {{ wsus.scheduled_tasks }}
-                            </span>
-
-                        </div>
-
-
-                        <div class="operation-row">
-
-                            <span class="operation-label">
-                                Em execução
-                            </span>
-
-                            <span class="operation-value text-info">
-                                {{ wsus.in_progress_tasks }}
-                            </span>
-
-                        </div>
-
-
-                        <div class="operation-row">
-
-                            <span class="operation-label">
-                                Aguardando reboot
-                            </span>
-
-                            <span class="operation-value text-warning">
-                                {{ wsus.reboot_tasks }}
-                            </span>
-
-                        </div>
-
-
-                        <div class="operation-row">
-
-                            <span class="operation-label">
-                                Validação
-                            </span>
-
-                            <span class="operation-value">
-                                {{ wsus.validation_tasks }}
-                            </span>
-
-                        </div>
-
-
-                        <div class="operation-row">
-
-                            <span class="operation-label">
-                                Bloqueado
-                            </span>
-
-                            <span class="operation-value text-danger">
-                                {{ wsus.blocked_tasks }}
-                            </span>
-
-                        </div>
-
-
                     </div>
 
-
                 </div>
 
 
-            </div>
+                <div class="platform-footer">
 
+                    <div class="platform-footer-text">
+                        {{ wsus.updated_percent }}% dos computadores estão atualizados.
+                    </div>
 
-
-            <div class="platform-footer">
-
-
-                <div class="platform-footer-text">
-
-                    {{ wsus.updated_percent }}%
-                    dos computadores estão atualizados.
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-outline-secondary"
+                        disabled
+                    >
+                        Módulo operacional na próxima etapa
+                    </button>
 
                 </div>
-
-
-                <button type="button" class="btn btn-sm btn-outline-secondary" disabled>
-                    Módulo WSUS — próxima etapa
-                </button>
-
-
-            </div>
-
 
             {% else %}
 
-
-            <div class="platform-empty">
-
-                Nenhum servidor WSUS ativo
-                foi encontrado para este cliente.
-
-            </div>
-
+                <div class="platform-empty">
+                    Nenhum servidor WSUS ativo foi encontrado.
+                </div>
 
             {% endif %}
 
-
         </section>
-
 
     </div>
 
-
 </div>
-
 
 {% endblock %}
 
 
-
 {% block scripts %}
-
 
 <script>
 
-    document.addEventListener(
-        "DOMContentLoaded",
-        function () {
+document.addEventListener("DOMContentLoaded", function () {
 
+    const dataElement =
+        document.getElementById("iacDashboardData");
 
-            const chartBaseOptions = {
+    if (!dataElement || typeof Chart === "undefined") {
+        return;
+    }
 
-                responsive: true,
+    const value = function (name) {
+        return Number(
+            dataElement.dataset[name] || 0
+        );
+    };
 
-                maintainAspectRatio: false,
-
-                cutout: "67%",
-
-                plugins: {
-
-                    legend: {
-
-                        position: "bottom",
-
-                        labels: {
-
-                            color: "#9bb0c4",
-
-                            boxWidth: 13,
-
-                            boxHeight: 13,
-
-                            padding: 14,
-
-                            font: {
-                                size: 10
-                            }
-
-                        }
-
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: "68%",
+        plugins: {
+            legend: {
+                position: "bottom",
+                labels: {
+                    color: "#9bb0c4",
+                    boxWidth: 11,
+                    boxHeight: 11,
+                    padding: 13,
+                    font: {
+                        size: 10
                     }
-
                 }
-
-            };
-
-
-            const kscCanvas =
-                document.getElementById(
-                    "kscStatusChart"
-                );
-
-
-            if (
-                kscCanvas
-                &&
-                typeof Chart !== "undefined"
-            ) {
-
-
-                const total =
-                    Number(
-                        "{{ total_endpoints|default:0 }}"
-                    )
-                    || 0;
-
-
-                const ok =
-                    Number(
-                        "{{ ok_count|default:0 }}"
-                    )
-                    || 0;
-
-
-                const critical =
-                    Number(
-                        "{{ critical_count|default:0 }}"
-                    )
-                    || 0;
-
-
-                const warning =
-                    Number(
-                        "{{ warning_count|default:0 }}"
-                    )
-                    || 0;
-
-
-                const unknown =
-                    Math.max(
-                        0,
-                        total
-                        - ok
-                        - critical
-                        - warning
-                    );
-
-
-                new Chart(
-                    kscCanvas,
-                    {
-
-                        type: "doughnut",
-
-                        data: {
-
-                            labels: [
-                                "OK",
-                                "Crítico",
-                                "Aviso",
-                                "Desconhecido"
-                            ],
-
-                            datasets: [
-
-                                {
-
-                                    data: [
-                                        ok,
-                                        critical,
-                                        warning,
-                                        unknown
-                                    ],
-
-                                    backgroundColor: [
-                                        "#00d29a",
-                                        "#ff465d",
-                                        "#ffb82e",
-                                        "#58798b"
-                                    ],
-
-                                    borderWidth: 0
-
-                                }
-
-                            ]
-
-                        },
-
-                        options:
-                            chartBaseOptions
-
-                    }
-                );
-
             }
-
-
-
-            const wsusCanvas =
-                document.getElementById(
-                    "wsusStatusChart"
-                );
-
-
-            if (
-                wsusCanvas
-                &&
-                typeof Chart !== "undefined"
-            ) {
-
-
-                new Chart(
-                    wsusCanvas,
-                    {
-
-                        type: "doughnut",
-
-                        data: {
-
-                            labels: [
-                                "Atualizados",
-                                "Pendentes",
-                                "Falhas",
-                                "Reboot",
-                                "Desconhecido"
-                            ],
-
-                            datasets: [
-
-                                {
-
-                                    data: [
-                                        Number("{{ wsus.updated|default:0 }}"),
-                                        Number("{{ wsus.pending|default:0 }}"),
-                                        Number("{{ wsus.failed|default:0 }}"),
-                                        Number("{{ wsus.reboot|default:0 }}"),
-                                        Number("{{ wsus.unknown|default:0 }}")
-                                    ],
-
-                                    backgroundColor: [
-                                        "#00d29a",
-                                        "#ffb82e",
-                                        "#ff465d",
-                                        "#37a9ff",
-                                        "#58798b"
-                                    ],
-
-                                    borderWidth: 0
-
-                                }
-
-                            ]
-
-                        },
-
-                        options:
-                            chartBaseOptions
-
-                    }
-                );
-
-            }
-
-
         }
-    );
+    };
+
+
+    const kscCanvas =
+        document.getElementById("kscStatusChart");
+
+    if (kscCanvas) {
+
+        const total = value("kscTotal");
+        const ok = value("kscOk");
+        const critical = value("kscCritical");
+        const warning = value("kscWarning");
+
+        let unknown = value("kscUnknown");
+
+        if (!unknown) {
+            unknown = Math.max(
+                0,
+                total - ok - critical - warning
+            );
+        }
+
+        new Chart(
+            kscCanvas,
+            {
+                type: "doughnut",
+
+                data: {
+                    labels: [
+                        "OK",
+                        "Crítico",
+                        "Aviso",
+                        "Desconhecido"
+                    ],
+
+                    datasets: [
+                        {
+                            data: [
+                                ok,
+                                critical,
+                                warning,
+                                unknown
+                            ],
+
+                            backgroundColor: [
+                                "#00d29a",
+                                "#ff465d",
+                                "#ffb82e",
+                                "#58798b"
+                            ],
+
+                            borderWidth: 0
+                        }
+                    ]
+                },
+
+                options:
+                    chartOptions
+            }
+        );
+
+    }
+
+
+    const wsusCanvas =
+        document.getElementById("wsusStatusChart");
+
+    if (wsusCanvas) {
+
+        new Chart(
+            wsusCanvas,
+            {
+                type: "doughnut",
+
+                data: {
+                    labels: [
+                        "Atualizados",
+                        "Pendentes",
+                        "Falhas",
+                        "Reboot",
+                        "Desconhecido"
+                    ],
+
+                    datasets: [
+                        {
+                            data: [
+                                value("wsusUpdated"),
+                                value("wsusPending"),
+                                value("wsusFailed"),
+                                value("wsusReboot"),
+                                value("wsusUnknown")
+                            ],
+
+                            backgroundColor: [
+                                "#00d29a",
+                                "#ffb82e",
+                                "#ff465d",
+                                "#37a9ff",
+                                "#58798b"
+                            ],
+
+                            borderWidth: 0
+                        }
+                    ]
+                },
+
+                options:
+                    chartOptions
+            }
+        );
+
+    }
+
+});
 
 </script>
-
 
 {% endblock %}
