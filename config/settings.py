@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     "actionplan",
     "integrations",
     "dashboard",
+    "wsus.apps.WsusConfig",
 ]
 
 MIDDLEWARE = [

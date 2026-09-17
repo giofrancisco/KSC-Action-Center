@@ -1,0 +1,563 @@
+.infrastructure-home {
+    --iac-panel: #0a2132;
+    --iac-panel-secondary: #0c283b;
+    --iac-border: #1e4963;
+    --iac-muted: #7892a7;
+    --iac-text: #edf6fb;
+
+    --ksc: #00d29a;
+    --ksc-soft: rgba(0, 210, 154, 0.12);
+
+    --wsus: #37a9ff;
+    --wsus-soft: rgba(55, 169, 255, 0.12);
+}
+
+
+/* =========================================================
+   CABEÇALHO
+   ========================================================= */
+
+.infrastructure-hero {
+    display: flex;
+
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 24px;
+
+    margin-bottom: 24px;
+}
+
+
+.infrastructure-eyebrow {
+    margin-bottom: 5px;
+
+    color: #16d8f4;
+
+    font-size: 11px;
+    font-weight: 900;
+
+    letter-spacing: 0.08rem;
+
+    text-transform: uppercase;
+}
+
+
+.infrastructure-title {
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: clamp(28px,
+            3vw,
+            40px);
+
+    font-weight: 900;
+
+    letter-spacing: -0.04rem;
+}
+
+
+.infrastructure-subtitle {
+    margin-top: 6px;
+    margin-bottom: 0;
+
+    color: var(--iac-muted);
+
+    font-size: 14px;
+}
+
+
+.infrastructure-context {
+    text-align: right;
+}
+
+
+.infrastructure-context-label {
+    color: #58768d;
+
+    font-size: 10px;
+    font-weight: 900;
+
+    letter-spacing: 0.06rem;
+
+    text-transform: uppercase;
+}
+
+
+.infrastructure-context-value {
+    margin-top: 3px;
+
+    color: #ffffff;
+
+    font-size: 16px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   PLATAFORMAS
+   ========================================================= */
+
+.platform-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2,
+            minmax(0, 1fr));
+
+    gap: 20px;
+}
+
+
+.platform-window {
+    position: relative;
+
+    min-width: 0;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(145deg,
+            #0b2538 0%,
+            #071a29 100%);
+
+    border: 1px solid var(--iac-border);
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 14px 38px rgba(0, 0, 0, 0.15);
+}
+
+
+.platform-window::before {
+    position: absolute;
+
+    top: 0;
+    right: 0;
+    left: 0;
+
+    height: 3px;
+
+    content: "";
+}
+
+
+.platform-window.platform-ksc::before {
+    background: var(--ksc);
+}
+
+
+.platform-window.platform-wsus::before {
+    background: var(--wsus);
+}
+
+
+/* =========================================================
+   CABEÇALHO DA PLATAFORMA
+   ========================================================= */
+
+.platform-header {
+    display: flex;
+
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 16px;
+
+    padding: 20px;
+
+    border-bottom:
+        1px solid rgba(66,
+            112,
+            142,
+            0.28);
+}
+
+
+.platform-identification {
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+}
+
+
+.platform-icon {
+    width: 46px;
+    height: 46px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 46px;
+
+    border-radius: 12px;
+
+    font-size: 12px;
+    font-weight: 900;
+
+    letter-spacing: 0.04rem;
+}
+
+
+.platform-ksc .platform-icon {
+    color: var(--ksc);
+
+    background:
+        var(--ksc-soft);
+
+    border:
+        1px solid rgba(0,
+            210,
+            154,
+            0.35);
+}
+
+
+.platform-wsus .platform-icon {
+    color: var(--wsus);
+
+    background:
+        var(--wsus-soft);
+
+    border:
+        1px solid rgba(55,
+            169,
+            255,
+            0.35);
+}
+
+
+.platform-name {
+    color: #ffffff;
+
+    font-size: 17px;
+    font-weight: 900;
+}
+
+
+.platform-description {
+    margin-top: 2px;
+
+    color: var(--iac-muted);
+
+    font-size: 12px;
+}
+
+
+.platform-sync {
+    color: #64849b;
+
+    font-size: 10px;
+
+    line-height: 1.5;
+
+    text-align: right;
+}
+
+
+/* =========================================================
+   MÉTRICAS
+   ========================================================= */
+
+.platform-metrics {
+    display: grid;
+
+    grid-template-columns:
+        repeat(5,
+            minmax(0, 1fr));
+
+    gap: 8px;
+
+    padding: 16px 16px 0;
+}
+
+
+.platform-metric {
+    min-width: 0;
+
+    padding: 12px;
+
+    background:
+        rgba(5,
+            20,
+            31,
+            0.48);
+
+    border:
+        1px solid rgba(44,
+            83,
+            108,
+            0.72);
+
+    border-radius: 10px;
+}
+
+
+.platform-metric-label {
+    min-height: 26px;
+
+    color: #64849b;
+
+    font-size: 9px;
+    font-weight: 900;
+
+    line-height: 1.3;
+
+    text-transform: uppercase;
+}
+
+
+.platform-metric-value {
+    margin-top: 5px;
+
+    color: #ffffff;
+
+    font-size: 22px;
+    font-weight: 900;
+
+    line-height: 1;
+}
+
+
+.metric-success {
+    color: #00d29a;
+}
+
+
+.metric-warning {
+    color: #ffb82e;
+}
+
+
+.metric-danger {
+    color: #ff465d;
+}
+
+
+.metric-info {
+    color: #16d8f4;
+}
+
+
+.metric-blue {
+    color: #37a9ff;
+}
+
+
+/* =========================================================
+   CORPO
+   ========================================================= */
+
+.platform-content {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1.08fr) minmax(220px, 0.92fr);
+
+    gap: 16px;
+
+    padding: 16px;
+}
+
+
+.platform-section {
+    min-width: 0;
+
+    padding: 16px;
+
+    background:
+        rgba(5,
+            20,
+            31,
+            0.42);
+
+    border:
+        1px solid rgba(44,
+            83,
+            108,
+            0.62);
+
+    border-radius: 12px;
+}
+
+
+.platform-section-title {
+    margin-bottom: 12px;
+
+    color: #dceaf3;
+
+    font-size: 11px;
+    font-weight: 900;
+
+    letter-spacing: 0.04rem;
+
+    text-transform: uppercase;
+}
+
+
+.platform-chart {
+    position: relative;
+
+    height: 245px;
+}
+
+
+/* =========================================================
+   LISTA OPERACIONAL
+   ========================================================= */
+
+.operation-list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+
+.operation-row {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    min-height: 39px;
+
+    padding: 8px 10px;
+
+    background:
+        rgba(12,
+            39,
+            58,
+            0.55);
+
+    border:
+        1px solid rgba(44,
+            83,
+            108,
+            0.48);
+
+    border-radius: 8px;
+}
+
+
+.operation-label {
+    color: #92a9ba;
+
+    font-size: 11px;
+}
+
+
+.operation-value {
+    color: #ffffff;
+
+    font-size: 15px;
+    font-weight: 900;
+}
+
+
+/* =========================================================
+   RODAPÉ
+   ========================================================= */
+
+.platform-footer {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    padding: 0 16px 16px;
+}
+
+
+.platform-footer-text {
+    color: #64849b;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   EMPTY
+   ========================================================= */
+
+.platform-empty {
+    padding: 40px 20px;
+
+    color: #7892a7;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   RESPONSIVO
+   ========================================================= */
+
+@media (max-width: 1399.98px) {
+
+    .platform-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 767.98px) {
+
+    .infrastructure-hero {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+
+    .infrastructure-context {
+        text-align: left;
+    }
+
+
+    .platform-header {
+        flex-direction: column;
+    }
+
+
+    .platform-sync {
+        text-align: left;
+    }
+
+
+    .platform-metrics {
+        grid-template-columns:
+            repeat(2,
+                minmax(0, 1fr));
+    }
+
+
+    .platform-content {
+        grid-template-columns: 1fr;
+    }
+
+
+    .platform-footer {
+        align-items: stretch;
+
+        flex-direction: column;
+    }
+
+
+    .platform-footer .btn {
+        width: 100%;
+    }
+
+}

@@ -1,238 +1,67 @@
 {% extends "base.html" %}
 
+{% load static %}
+{% load infrastructure_dashboard %}
+
 
 {% block title %}
-Dashboard - KSC Action Center
+Infrastructure Action Center
+{% endblock %}
+
+
+{% block extra_head %}
+
+<link rel="stylesheet" href="{% static 'css/infrastructure-dashboard.css' %}?v=1">
+
 {% endblock %}
 
 
 {% block content %}
 
 
-{% if not customer %}
+{% wsus_summary as wsus %}
 
 
-    <!-- =====================================================
-    SEM CLIENTE
-    ====================================================== -->
-
-    <div class="alert alert-warning">
-
-        Nenhum cliente cadastrado.
-
-        Execute:
-
-        <code>
-            python manage.py seed_customer
-        </code>
-
-        ou cadastre um cliente em
-
-        <a href="/admin/">
-            Administração
-        </a>.
-
-    </div>
+<div class="infrastructure-home">
 
 
-{% else %}
+    <div class="infrastructure-hero">
 
+        <div>
 
-
-<!-- =========================================================
-CABEÇALHO DO CLIENTE
-========================================================= -->
-
-<div
-    class="
-        d-flex
-        flex-wrap
-        justify-content-between
-        align-items-start
-        gap-3
-        mb-4
-    "
->
-
-
-    <!-- CLIENTE -->
-
-    <div>
-
-
-        <div
-            class="
-                text-info
-                text-uppercase
-                small
-                fw-bold
-            "
-        >
-            Cliente
-        </div>
-
-
-        <h1
-            class="
-                h3
-                fw-bold
-                mb-1
-            "
-        >
-            {{ customer.name }}
-        </h1>
-
-
-        <div class="text-secondary">
-
-            Kaspersky Security Center
-
-            •
-
-            {{ customer.ksc_host }}:{{ customer.ksc_port }}
-
-        </div>
-
-
-    </div>
-
-
-
-    <!-- ÚLTIMA SINCRONIZAÇÃO -->
-
-    <div
-        class="
-            text-lg-end
-            small
-            text-secondary
-        "
-    >
-
-
-        {% if last_sync %}
-
-
-            <div>
-
-                Última sincronização:
-
-                {{ last_sync.started_at|date:"d/m/Y H:i:s" }}
-
+            <div class="infrastructure-eyebrow">
+                Infrastructure Overview
             </div>
 
+            <h1 class="infrastructure-title">
+                Infrastructure Action Center
+            </h1>
 
-            <div>
+            <p class="infrastructure-subtitle">
+                Security • Patching • Operations
+            </p>
 
-                Status:
-
-
-                {% if last_sync.status == "SUCCESS" %}
-
-
-                    <strong
-                        class="text-success"
-                    >
-                        Sucesso
-                    </strong>
+        </div>
 
 
-                {% elif last_sync.status == "FAILED" %}
+        <div class="infrastructure-context">
 
+            <div class="infrastructure-context-label">
+                Cliente
+            </div>
 
-                    <strong
-                        class="text-danger"
-                    >
-                        Falha
-                    </strong>
+            <div class="infrastructure-context-value">
 
+                {% if customer %}
 
-                {% elif last_sync.status == "RUNNING" %}
-
-
-                    <strong
-                        class="text-warning"
-                    >
-                        Executando
-                    </strong>
-
+                {{ customer.name }}
 
                 {% else %}
 
-
-                    <strong
-                        class="text-secondary"
-                    >
-                        {{ last_sync.status }}
-                    </strong>
-
+                Nenhum cliente selecionado
 
                 {% endif %}
 
-
-            </div>
-
-
-        {% else %}
-
-
-            <div>
-
-                Nenhuma sincronização registrada.
-
-            </div>
-
-
-        {% endif %}
-
-
-    </div>
-
-
-</div>
-
-
-
-<!-- =========================================================
-KPIs
-========================================================= -->
-
-<div
-    class="
-        row
-        g-3
-        mb-4
-    "
->
-
-
-    <!-- ENDPOINTS -->
-
-    <div
-        class="
-            col-6
-            col-md-4
-            col-xl
-        "
-    >
-
-        <div class="metric-card">
-
-            <div class="metric-label">
-
-                Endpoints
-
-            </div>
-
-
-            <div
-                class="
-                    metric-value
-                    text-info
-                "
-            >
-
-                {{ total_endpoints }}
-
             </div>
 
         </div>
@@ -241,297 +70,33 @@ KPIs
 
 
 
-    <!-- OK -->
+    <div class="platform-grid">
 
-    <div
-        class="
-            col-6
-            col-md-4
-            col-xl
-        "
-    >
 
-        <div class="metric-card">
+        <!-- =====================================================
+             KASPERSKY
+             ===================================================== -->
 
-            <div class="metric-label">
+        <section class="platform-window platform-ksc">
 
-                Protegidos / OK
 
-            </div>
+            <div class="platform-header">
 
 
-            <div
-                class="
-                    metric-value
-                    text-success
-                "
-            >
+                <div class="platform-identification">
 
-                {{ ok_count }}
+                    <div class="platform-icon">
+                        KSC
+                    </div>
 
-            </div>
+                    <div>
 
-        </div>
-
-    </div>
-
-
-
-    <!-- CRÍTICOS -->
-
-    <div
-        class="
-            col-6
-            col-md-4
-            col-xl
-        "
-    >
-
-        <div class="metric-card">
-
-            <div class="metric-label">
-
-                Críticos
-
-            </div>
-
-
-            <div
-                class="
-                    metric-value
-                    text-danger
-                "
-            >
-
-                {{ critical_count }}
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-
-    <!-- AVISOS -->
-
-    <div
-        class="
-            col-6
-            col-md-4
-            col-xl
-        "
-    >
-
-        <div class="metric-card">
-
-            <div class="metric-label">
-
-                Avisos
-
-            </div>
-
-
-            <div
-                class="
-                    metric-value
-                    text-warning
-                "
-            >
-
-                {{ warning_count }}
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-
-    <!-- PROBLEMAS -->
-
-    <div
-        class="
-            col-6
-            col-md-4
-            col-xl
-        "
-    >
-
-        <div class="metric-card">
-
-            <div class="metric-label">
-
-                Problemas abertos
-
-            </div>
-
-
-            <div class="metric-value">
-
-                {{ open_problem_count }}
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-</div>
-
-
-
-<!-- =========================================================
-SEGUNDA LINHA
-========================================================= -->
-
-<div class="row g-3">
-
-
-    <!-- =====================================================
-    STATUS DE PROTEÇÃO
-    ====================================================== -->
-
-    <div
-        class="
-            col-12
-            col-xl-7
-        "
-    >
-
-        <div
-            class="
-                panel-card
-                h-100
-            "
-        >
-
-
-            <!-- CABEÇALHO -->
-
-            <div
-                class="
-                    d-flex
-                    justify-content-between
-                    align-items-center
-                    mb-3
-                "
-            >
-
-
-                <h2
-                    class="
-                        h6
-                        text-uppercase
-                        fw-bold
-                        mb-0
-                    "
-                >
-                    Status de Proteção
-                </h2>
-
-
-
-                <a
-                    href="{% url 'inventory:list' %}"
-                    class="
-                        btn
-                        btn-sm
-                        btn-outline-info
-                    "
-                >
-                    Ver endpoints
-                </a>
-
-
-            </div>
-
-
-
-            <!-- GRÁFICO -->
-
-            <div
-                style="
-                    height: 330px;
-                "
-            >
-
-                <canvas
-                    id="statusChart"
-                ></canvas>
-
-            </div>
-
-
-        </div>
-
-    </div>
-
-
-
-    <!-- =====================================================
-    PLANO DE AÇÃO
-    ====================================================== -->
-
-    <div
-        class="
-            col-12
-            col-xl-5
-        "
-    >
-
-        <div
-            class="
-                panel-card
-                h-100
-            "
-        >
-
-
-            <h2
-                class="
-                    h6
-                    text-uppercase
-                    fw-bold
-                    mb-3
-                "
-            >
-                Plano de Ação — Estrutura Inicial
-            </h2>
-
-
-
-            <!-- PRIORIDADES -->
-
-            <div class="row g-3">
-
-
-                <!-- P0 -->
-
-                <div class="col-4">
-
-                    <div class="mini-card">
-
-                        <div
-                            class="
-                                text-secondary
-                                small
-                            "
-                        >
-                            P0
+                        <div class="platform-name">
+                            Kaspersky Security Center
                         </div>
 
-
-                        <div
-                            class="
-                                fs-3
-                                fw-bold
-                                text-danger
-                            "
-                        >
-                            {{ p0_count }}
+                        <div class="platform-description">
+                            Endpoint Security & Protection
                         </div>
 
                     </div>
@@ -539,32 +104,162 @@ SEGUNDA LINHA
                 </div>
 
 
+                <div class="platform-sync">
 
-                <!-- P1 -->
+                    <div>
+                        Última sincronização
+                    </div>
 
-                <div class="col-4">
+                    <div>
 
-                    <div class="mini-card">
+                        {% if last_sync %}
 
-                        <div
-                            class="
-                                text-secondary
-                                small
-                            "
-                        >
-                            P1
-                        </div>
+                        {% if last_sync.finished_at %}
+
+                        {{ last_sync.finished_at|date:"d/m/Y H:i:s" }}
+
+                        {% elif last_sync.started_at %}
+
+                        {{ last_sync.started_at|date:"d/m/Y H:i:s" }}
+
+                        {% else %}
+
+                        —
+
+                        {% endif %}
+
+                        {% else %}
+
+                        —
+
+                        {% endif %}
+
+                    </div>
 
 
-                        <div
-                            class="
-                                fs-3
-                                fw-bold
-                                text-warning
-                            "
-                        >
-                            {{ p1_count }}
-                        </div>
+                    {% if last_sync %}
+
+                    <div>
+
+                        {% if last_sync.status == "SUCCESS" %}
+
+                        <span class="text-success">
+                            Sucesso
+                        </span>
+
+                        {% elif last_sync.status == "FAILED" %}
+
+                        <span class="text-danger">
+                            Falha
+                        </span>
+
+                        {% elif last_sync.status == "RUNNING" %}
+
+                        <span class="text-warning">
+                            Em execução
+                        </span>
+
+                        {% else %}
+
+                        {{ last_sync.status }}
+
+                        {% endif %}
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="platform-metrics">
+
+
+                <div class="platform-metric">
+
+                    <div class="platform-metric-label">
+                        Endpoints
+                    </div>
+
+                    <div class="platform-metric-value metric-info">
+                        {{ total_endpoints|default:0 }}
+                    </div>
+
+                </div>
+
+
+                <div class="platform-metric">
+
+                    <div class="platform-metric-label">
+                        Protegidos / OK
+                    </div>
+
+                    <div class="platform-metric-value metric-success">
+                        {{ ok_count|default:0 }}
+                    </div>
+
+                </div>
+
+
+                <div class="platform-metric">
+
+                    <div class="platform-metric-label">
+                        Críticos
+                    </div>
+
+                    <div class="platform-metric-value metric-danger">
+                        {{ critical_count|default:0 }}
+                    </div>
+
+                </div>
+
+
+                <div class="platform-metric">
+
+                    <div class="platform-metric-label">
+                        Avisos
+                    </div>
+
+                    <div class="platform-metric-value metric-warning">
+                        {{ warning_count|default:0 }}
+                    </div>
+
+                </div>
+
+
+                <div class="platform-metric">
+
+                    <div class="platform-metric-label">
+                        Problemas abertos
+                    </div>
+
+                    <div class="platform-metric-value">
+                        {{ open_problems|default:0 }}
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="platform-content">
+
+
+                <div class="platform-section">
+
+                    <div class="platform-section-title">
+                        Status de proteção
+                    </div>
+
+                    <div class="platform-chart">
+
+                        <canvas id="kscStatusChart"></canvas>
 
                     </div>
 
@@ -572,31 +267,54 @@ SEGUNDA LINHA
 
 
 
-                <!-- P2 -->
+                <div class="platform-section">
 
-                <div class="col-4">
+                    <div class="platform-section-title">
+                        Plano de ação
+                    </div>
 
-                    <div class="mini-card">
 
-                        <div
-                            class="
-                                text-secondary
-                                small
-                            "
-                        >
-                            P2
+                    <div class="operation-list">
+
+
+                        <div class="operation-row">
+
+                            <span class="operation-label">
+                                P0 — Crítico
+                            </span>
+
+                            <span class="operation-value text-danger">
+                                {{ p0|default:0 }}
+                            </span>
+
                         </div>
 
 
-                        <div
-                            class="
-                                fs-3
-                                fw-bold
-                                text-info
-                            "
-                        >
-                            {{ p2_count }}
+                        <div class="operation-row">
+
+                            <span class="operation-label">
+                                P1 — Alta
+                            </span>
+
+                            <span class="operation-value text-warning">
+                                {{ p1|default:0 }}
+                            </span>
+
                         </div>
+
+
+                        <div class="operation-row">
+
+                            <span class="operation-label">
+                                P2 — Operacional
+                            </span>
+
+                            <span class="operation-value text-info">
+                                {{ p2|default:0 }}
+                            </span>
+
+                        </div>
+
 
                     </div>
 
@@ -607,177 +325,385 @@ SEGUNDA LINHA
 
 
 
-            <hr
-                class="
-                    border-secondary-subtle
-                    my-4
-                "
-            >
+            <div class="platform-footer">
+
+
+                <div class="platform-footer-text">
+
+                    Segurança de endpoints,
+                    proteção e plano de remediação.
+
+                </div>
+
+
+                <div class="d-flex flex-wrap gap-2">
+
+                    <a href="{% url 'inventory:list' %}" class="btn btn-sm btn-outline-info">
+                        Ver endpoints
+                    </a>
+
+                    <a href="{% url 'actionplan:board' %}" class="btn btn-sm btn-info">
+                        Ver problemas
+                    </a>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
 
 
 
-            <p class="text-secondary">
+        <!-- =====================================================
+             WSUS
+             ===================================================== -->
 
-                Este painel apresenta os problemas
-                identificados no ambiente e permite
-                acompanhar as prioridades P0, P1 e P2.
-
-                O quadro de problemas será utilizado
-                para organizar o atendimento,
-                responsáveis, prazos e evolução
-                até o status protegido.
-
-            </p>
+        <section class="platform-window platform-wsus">
 
 
-
-            <!-- =================================================
-            BOTÃO PROBLEMAS / KANBAN
-            ================================================== -->
-
-            <a
-                href="{% url 'actionplan:board' %}"
-                class="
-                    btn
-                    btn-outline-info
-                    btn-sm
-                "
-            >
-                Ver problemas
-            </a>
+            <div class="platform-header">
 
 
-        </div>
+                <div class="platform-identification">
+
+                    <div class="platform-icon">
+                        WSUS
+                    </div>
+
+                    <div>
+
+                        <div class="platform-name">
+                            Windows Server Update Services
+                        </div>
+
+                        <div class="platform-description">
+                            Patch Management & Update Compliance
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="platform-sync">
+
+                    {% if wsus.available %}
+
+                    <div>
+                        {{ wsus.server_name }}
+                    </div>
+
+                    <div>
+                        {{ wsus.hostname }}:{{ wsus.port }}
+                    </div>
+
+                    <div>
+
+                        {% if wsus.last_sync_at %}
+
+                        {{ wsus.last_sync_at|date:"d/m/Y H:i:s" }}
+
+                        {% else %}
+
+                        Sem coleta
+
+                        {% endif %}
+
+                    </div>
+
+                    {% else %}
+
+                    <div>
+                        WSUS não configurado
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+
+            </div>
+
+
+
+            {% if wsus.available %}
+
+
+            <div class="platform-metrics">
+
+
+                <div class="platform-metric">
+
+                    <div class="platform-metric-label">
+                        Computadores
+                    </div>
+
+                    <div class="platform-metric-value metric-blue">
+                        {{ wsus.total }}
+                    </div>
+
+                </div>
+
+
+                <div class="platform-metric">
+
+                    <div class="platform-metric-label">
+                        Atualizados
+                    </div>
+
+                    <div class="platform-metric-value metric-success">
+                        {{ wsus.updated }}
+                    </div>
+
+                </div>
+
+
+                <div class="platform-metric">
+
+                    <div class="platform-metric-label">
+                        Pendentes
+                    </div>
+
+                    <div class="platform-metric-value metric-warning">
+                        {{ wsus.pending }}
+                    </div>
+
+                </div>
+
+
+                <div class="platform-metric">
+
+                    <div class="platform-metric-label">
+                        Com falha
+                    </div>
+
+                    <div class="platform-metric-value metric-danger">
+                        {{ wsus.failed }}
+                    </div>
+
+                </div>
+
+
+                <div class="platform-metric">
+
+                    <div class="platform-metric-label">
+                        Reboot pendente
+                    </div>
+
+                    <div class="platform-metric-value metric-warning">
+                        {{ wsus.reboot }}
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="platform-content">
+
+
+                <div class="platform-section">
+
+                    <div class="platform-section-title">
+                        Status de atualização
+                    </div>
+
+
+                    <div class="platform-chart">
+
+                        <canvas id="wsusStatusChart"></canvas>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="platform-section">
+
+
+                    <div class="platform-section-title">
+                        Execução operacional
+                    </div>
+
+
+                    <div class="operation-list">
+
+
+                        <div class="operation-row">
+
+                            <span class="operation-label">
+                                Atividades abertas
+                            </span>
+
+                            <span class="operation-value">
+                                {{ wsus.open_tasks }}
+                            </span>
+
+                        </div>
+
+
+                        <div class="operation-row">
+
+                            <span class="operation-label">
+                                Agendado
+                            </span>
+
+                            <span class="operation-value">
+                                {{ wsus.scheduled_tasks }}
+                            </span>
+
+                        </div>
+
+
+                        <div class="operation-row">
+
+                            <span class="operation-label">
+                                Em execução
+                            </span>
+
+                            <span class="operation-value text-info">
+                                {{ wsus.in_progress_tasks }}
+                            </span>
+
+                        </div>
+
+
+                        <div class="operation-row">
+
+                            <span class="operation-label">
+                                Aguardando reboot
+                            </span>
+
+                            <span class="operation-value text-warning">
+                                {{ wsus.reboot_tasks }}
+                            </span>
+
+                        </div>
+
+
+                        <div class="operation-row">
+
+                            <span class="operation-label">
+                                Validação
+                            </span>
+
+                            <span class="operation-value">
+                                {{ wsus.validation_tasks }}
+                            </span>
+
+                        </div>
+
+
+                        <div class="operation-row">
+
+                            <span class="operation-label">
+                                Bloqueado
+                            </span>
+
+                            <span class="operation-value text-danger">
+                                {{ wsus.blocked_tasks }}
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="platform-footer">
+
+
+                <div class="platform-footer-text">
+
+                    {{ wsus.updated_percent }}%
+                    dos computadores estão atualizados.
+
+                </div>
+
+
+                <button type="button" class="btn btn-sm btn-outline-secondary" disabled>
+                    Módulo WSUS — próxima etapa
+                </button>
+
+
+            </div>
+
+
+            {% else %}
+
+
+            <div class="platform-empty">
+
+                Nenhum servidor WSUS ativo
+                foi encontrado para este cliente.
+
+            </div>
+
+
+            {% endif %}
+
+
+        </section>
+
 
     </div>
 
 
 </div>
-
-
-{% endif %}
 
 
 {% endblock %}
 
 
 
-<!-- =========================================================
-SCRIPTS
-========================================================= -->
-
 {% block scripts %}
-
-
-{% if customer %}
 
 
 <script>
 
-    const statusChartCanvas =
-        document.getElementById(
-            "statusChart"
-        );
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
 
 
-    if (statusChartCanvas) {
+            const chartBaseOptions = {
 
-        new Chart(
-            statusChartCanvas,
-            {
+                responsive: true,
 
-                type: "doughnut",
+                maintainAspectRatio: false,
 
+                cutout: "67%",
 
-                data: {
+                plugins: {
 
-                    labels: [
-                        "OK",
-                        "Crítico",
-                        "Aviso",
-                        "Desconhecido"
-                    ],
+                    legend: {
 
+                        position: "bottom",
 
-                    datasets: [
+                        labels: {
 
-                        {
+                            color: "#9bb0c4",
 
-                            data: [
+                            boxWidth: 13,
 
-                                {{ ok_count }},
+                            boxHeight: 13,
 
-                                {{ critical_count }},
+                            padding: 14,
 
-                                {{ warning_count }},
-
-                                {{ unknown_count }}
-
-                            ],
-
-
-                            backgroundColor: [
-
-                                "#00d084",
-
-                                "#ff4d5e",
-
-                                "#ffb020",
-
-                                "#607d8b"
-
-                            ],
-
-
-                            borderColor:
-                                "#0d1b2a",
-
-
-                            borderWidth:
-                                4
-
-                        }
-
-                    ]
-
-                },
-
-
-                options: {
-
-                    responsive:
-                        true,
-
-
-                    maintainAspectRatio:
-                        false,
-
-
-                    cutout:
-                        "48%",
-
-
-                    plugins: {
-
-                        legend: {
-
-                            position:
-                                "top",
-
-
-                            labels: {
-
-                                color:
-                                    "#dbe8f5",
-
-
-                                usePointStyle:
-                                    false,
-
-
-                                padding:
-                                    14
-
+                            font: {
+                                size: 10
                             }
 
                         }
@@ -786,15 +712,181 @@ SCRIPTS
 
                 }
 
-            }
-        );
+            };
 
-    }
+
+            const kscCanvas =
+                document.getElementById(
+                    "kscStatusChart"
+                );
+
+
+            if (
+                kscCanvas
+                &&
+                typeof Chart !== "undefined"
+            ) {
+
+
+                const total =
+                    Number(
+                        "{{ total_endpoints|default:0 }}"
+                    )
+                    || 0;
+
+
+                const ok =
+                    Number(
+                        "{{ ok_count|default:0 }}"
+                    )
+                    || 0;
+
+
+                const critical =
+                    Number(
+                        "{{ critical_count|default:0 }}"
+                    )
+                    || 0;
+
+
+                const warning =
+                    Number(
+                        "{{ warning_count|default:0 }}"
+                    )
+                    || 0;
+
+
+                const unknown =
+                    Math.max(
+                        0,
+                        total
+                        - ok
+                        - critical
+                        - warning
+                    );
+
+
+                new Chart(
+                    kscCanvas,
+                    {
+
+                        type: "doughnut",
+
+                        data: {
+
+                            labels: [
+                                "OK",
+                                "Crítico",
+                                "Aviso",
+                                "Desconhecido"
+                            ],
+
+                            datasets: [
+
+                                {
+
+                                    data: [
+                                        ok,
+                                        critical,
+                                        warning,
+                                        unknown
+                                    ],
+
+                                    backgroundColor: [
+                                        "#00d29a",
+                                        "#ff465d",
+                                        "#ffb82e",
+                                        "#58798b"
+                                    ],
+
+                                    borderWidth: 0
+
+                                }
+
+                            ]
+
+                        },
+
+                        options:
+                            chartBaseOptions
+
+                    }
+                );
+
+            }
+
+
+
+            const wsusCanvas =
+                document.getElementById(
+                    "wsusStatusChart"
+                );
+
+
+            if (
+                wsusCanvas
+                &&
+                typeof Chart !== "undefined"
+            ) {
+
+
+                new Chart(
+                    wsusCanvas,
+                    {
+
+                        type: "doughnut",
+
+                        data: {
+
+                            labels: [
+                                "Atualizados",
+                                "Pendentes",
+                                "Falhas",
+                                "Reboot",
+                                "Desconhecido"
+                            ],
+
+                            datasets: [
+
+                                {
+
+                                    data: [
+                                        Number("{{ wsus.updated|default:0 }}"),
+                                        Number("{{ wsus.pending|default:0 }}"),
+                                        Number("{{ wsus.failed|default:0 }}"),
+                                        Number("{{ wsus.reboot|default:0 }}"),
+                                        Number("{{ wsus.unknown|default:0 }}")
+                                    ],
+
+                                    backgroundColor: [
+                                        "#00d29a",
+                                        "#ffb82e",
+                                        "#ff465d",
+                                        "#37a9ff",
+                                        "#58798b"
+                                    ],
+
+                                    borderWidth: 0
+
+                                }
+
+                            ]
+
+                        },
+
+                        options:
+                            chartBaseOptions
+
+                    }
+                );
+
+            }
+
+
+        }
+    );
 
 </script>
-
-
-{% endif %}
 
 
 {% endblock %}
