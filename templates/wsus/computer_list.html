@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-
 {% load static %}
 
 
@@ -12,7 +11,7 @@ WSUS - Computadores
 
 <link
     rel="stylesheet"
-    href="{% static 'css/wsus-module.css' %}?v=1"
+    href="{% static 'css/wsus-module.css' %}?v=2"
 >
 
 {% endblock %}
@@ -23,31 +22,20 @@ WSUS - Computadores
 
 <div class="wsus-page-header">
 
-
     <div>
 
-
         <div class="wsus-eyebrow">
-
             Windows Server Update Services
-
         </div>
 
-
         <h1 class="wsus-page-title">
-
             Computadores
-
         </h1>
 
-
         <p class="wsus-page-subtitle">
-
             Inventário e conformidade dos equipamentos
             reportados pelo WSUS.
-
         </p>
-
 
     </div>
 
@@ -56,86 +44,60 @@ WSUS - Computadores
         href="{% url 'wsus:activities' %}"
         class="btn btn-sm btn-outline-info"
     >
-
         Ver atividades
-
     </a>
 
-
 </div>
-
 
 
 <div class="wsus-kpi-grid">
 
-
     <div class="wsus-kpi">
-
         <div class="wsus-kpi-label">
             Computadores
         </div>
-
         <div class="wsus-kpi-value text-info">
             {{ counts.total }}
         </div>
-
     </div>
 
-
     <div class="wsus-kpi">
-
         <div class="wsus-kpi-label">
             Atualizados
         </div>
-
         <div class="wsus-kpi-value text-success">
             {{ counts.updated }}
         </div>
-
     </div>
 
-
     <div class="wsus-kpi">
-
         <div class="wsus-kpi-label">
             Pendentes
         </div>
-
         <div class="wsus-kpi-value text-warning">
             {{ counts.pending }}
         </div>
-
     </div>
 
-
     <div class="wsus-kpi">
-
         <div class="wsus-kpi-label">
             Com falha
         </div>
-
         <div class="wsus-kpi-value text-danger">
             {{ counts.failed }}
         </div>
-
     </div>
 
-
     <div class="wsus-kpi">
-
         <div class="wsus-kpi-label">
             Reboot pendente
         </div>
-
         <div class="wsus-kpi-value text-warning">
             {{ counts.reboot }}
         </div>
-
     </div>
 
-
 </div>
-
 
 
 <form
@@ -143,12 +105,9 @@ WSUS - Computadores
     class="wsus-filter-panel"
 >
 
-
     <div class="row g-2">
 
-
         <div class="col-12 col-xl">
-
 
             <input
                 type="text"
@@ -158,134 +117,94 @@ WSUS - Computadores
                 placeholder="Buscar hostname, IP, sistema operacional ou grupo..."
             >
 
-
         </div>
 
 
         <div class="col-12 col-md-4 col-xl-2">
-
 
             <select
                 name="state"
                 class="form-select"
             >
 
-
                 <option value="">
-
                     Todas as situações
-
                 </option>
-
 
                 {% for value, label in state_choices %}
 
-
                     <option
                         value="{{ value }}"
-                        {% if state == value %}
-                            selected
-                        {% endif %}
+                        {% if state == value %}selected{% endif %}
                     >
-
                         {{ label }}
-
                     </option>
-
 
                 {% endfor %}
 
-
             </select>
-
 
         </div>
 
 
         <div class="col-12 col-md-4 col-xl-3">
 
-
             <select
                 name="group"
                 class="form-select"
             >
 
-
                 <option value="">
-
                     Todos os grupos
-
                 </option>
-
 
                 {% for item in groups %}
 
-
                     <option
                         value="{{ item }}"
-                        {% if group == item %}
-                            selected
-                        {% endif %}
+                        {% if group == item %}selected{% endif %}
                     >
-
                         {{ item }}
-
                     </option>
-
 
                 {% endfor %}
 
-
             </select>
-
 
         </div>
 
 
         <div class="col-12 col-md-auto">
-
 
             <button
                 type="submit"
                 class="btn btn-info w-100"
             >
-
                 Filtrar
-
             </button>
-
 
         </div>
 
 
         <div class="col-12 col-md-auto">
 
-
             <a
                 href="{% url 'wsus:computers' %}"
                 class="btn btn-outline-secondary w-100"
             >
-
                 Limpar
-
             </a>
-
 
         </div>
 
-
     </div>
-
 
 </form>
 
 
-
 <div class="wsus-table-panel">
 
-
     <div class="table-responsive">
-
 
         <table
             class="
@@ -297,47 +216,31 @@ WSUS - Computadores
             "
         >
 
-
             <thead>
 
-
                 <tr>
-
                     <th>Situação</th>
-
                     <th>Computador</th>
-
                     <th>IP</th>
-
                     <th>Sistema operacional</th>
-
                     <th>Grupo</th>
-
                     <th>Pendentes</th>
-
                     <th>Falhas</th>
-
                     <th>Reboot</th>
-
                     <th>Último report</th>
-
+                    <th>Atividade</th>
                 </tr>
-
 
             </thead>
 
 
             <tbody>
 
-
                 {% for computer in page %}
-
 
                     <tr>
 
-
                         <td>
-
 
                             {% if computer.update_state == "UPDATED" %}
 
@@ -371,56 +274,35 @@ WSUS - Computadores
 
                             {% endif %}
 
-
                         </td>
 
-
                         <td>
-
                             <strong>
                                 {{ computer.hostname }}
                             </strong>
-
                         </td>
 
-
-                        <td>
-
+                        <td class="text-nowrap">
                             {{ computer.ip_address|default:"—" }}
-
                         </td>
 
-
                         <td>
-
                             {{ computer.os_name|default:"—" }}
-
                         </td>
 
-
                         <td>
-
                             {{ computer.group_name|default:"—" }}
-
                         </td>
 
-
                         <td>
-
                             {{ computer.needed_count }}
-
                         </td>
 
-
                         <td>
-
                             {{ computer.failed_count }}
-
                         </td>
 
-
                         <td>
-
 
                             {% if computer.reboot_pending %}
 
@@ -436,12 +318,9 @@ WSUS - Computadores
 
                             {% endif %}
 
-
                         </td>
 
-
-                        <td>
-
+                        <td class="text-nowrap">
 
                             {% if computer.last_report_at %}
 
@@ -453,49 +332,164 @@ WSUS - Computadores
 
                             {% endif %}
 
+                        </td>
+
+                        <td class="text-nowrap">
+
+                            {% if computer.open_maintenance_tasks %}
+
+                                {% with task=computer.open_maintenance_tasks.0 %}
+
+                                    <a
+                                        href="{% url 'wsus:activities' %}?q={{ computer.hostname|urlencode }}"
+                                        class="btn btn-sm btn-outline-warning"
+                                    >
+                                        Atividade #{{ task.id }}
+                                    </a>
+
+                                {% endwith %}
+
+                            {% else %}
+
+                                <button
+                                    type="button"
+                                    class="
+                                        btn
+                                        btn-sm
+                                        btn-outline-info
+                                        js-wsus-task-modal
+                                    "
+
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#wsusTaskModal"
+
+                                    data-mode="create"
+                                    data-action-url="{% url 'wsus:task_create' computer.id %}"
+
+                                    data-hostname="{{ computer.hostname|escape }}"
+                                    data-ip="{{ computer.ip_address|default:''|escape }}"
+
+                                    data-assigned-to=""
+                                    data-priority="P2"
+                                    data-status="PENDING"
+                                    data-start-at=""
+                                    data-end-at=""
+                                    data-allow-reboot="0"
+                                    data-notes=""
+                                >
+                                    Criar atividade
+                                </button>
+
+                            {% endif %}
 
                         </td>
 
-
                     </tr>
-
 
                 {% empty %}
 
-
                     <tr>
 
-
                         <td
-                            colspan="9"
+                            colspan="10"
                             class="
                                 text-center
                                 text-secondary
                                 py-5
                             "
                         >
-
                             Nenhum computador encontrado.
-
                         </td>
-
 
                     </tr>
 
-
                 {% endfor %}
-
 
             </tbody>
 
-
         </table>
-
 
     </div>
 
-
 </div>
 
+
+{% if page.paginator.num_pages > 1 %}
+
+    <div
+        class="
+            d-flex
+            justify-content-end
+            mt-3
+        "
+    >
+
+        <nav>
+
+            <ul class="pagination pagination-sm mb-0">
+
+                {% if page.has_previous %}
+
+                    <li class="page-item">
+
+                        <a
+                            class="page-link"
+                            href="?q={{ q|urlencode }}&state={{ state|urlencode }}&group={{ group|urlencode }}&page={{ page.previous_page_number }}"
+                        >
+                            Anterior
+                        </a>
+
+                    </li>
+
+                {% endif %}
+
+
+                <li class="page-item disabled">
+
+                    <span class="page-link">
+                        Página
+                        {{ page.number }}
+                        de
+                        {{ page.paginator.num_pages }}
+                    </span>
+
+                </li>
+
+
+                {% if page.has_next %}
+
+                    <li class="page-item">
+
+                        <a
+                            class="page-link"
+                            href="?q={{ q|urlencode }}&state={{ state|urlencode }}&group={{ group|urlencode }}&page={{ page.next_page_number }}"
+                        >
+                            Próxima
+                        </a>
+
+                    </li>
+
+                {% endif %}
+
+            </ul>
+
+        </nav>
+
+    </div>
+
+{% endif %}
+
+
+{% include "wsus/_task_modal.html" %}
+
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script
+    src="{% static 'js/wsus-task-editor.js' %}?v=1"
+></script>
 
 {% endblock %}

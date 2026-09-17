@@ -1,0 +1,290 @@
+<div
+    class="modal fade"
+    id="wsusTaskModal"
+    tabindex="-1"
+    aria-labelledby="wsusTaskModalLabel"
+    aria-hidden="true"
+>
+    <div
+        class="
+            modal-dialog
+            modal-dialog-centered
+            modal-lg
+        "
+    >
+
+        <div class="modal-content wsus-task-modal">
+
+            <form
+                id="wsusTaskForm"
+                method="post"
+                action=""
+            >
+
+                {% csrf_token %}
+
+                <input
+                    type="hidden"
+                    name="next"
+                    value="{{ request.get_full_path }}"
+                >
+
+
+                <div class="modal-header">
+
+                    <div>
+
+                        <div class="wsus-modal-eyebrow">
+                            WSUS
+                        </div>
+
+                        <h2
+                            class="modal-title h5 mb-0"
+                            id="wsusTaskModalLabel"
+                        >
+                            Atividade WSUS
+                        </h2>
+
+                        <div
+                            id="wsusTaskComputerInfo"
+                            class="wsus-modal-computer"
+                        ></div>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Fechar"
+                    ></button>
+
+                </div>
+
+
+                <div class="modal-body">
+
+                    <div class="row g-3">
+
+
+                        <div class="col-12 col-md-6">
+
+                            <label
+                                for="wsusTaskAssignedTo"
+                                class="form-label"
+                            >
+                                Responsável
+                            </label>
+
+                            <select
+                                id="wsusTaskAssignedTo"
+                                name="assigned_to"
+                                class="form-select"
+                            >
+
+                                <option value="">
+                                    Não atribuído
+                                </option>
+
+                                {% for item in users %}
+
+                                    <option value="{{ item.id }}">
+
+                                        {% if item.get_full_name %}
+                                            {{ item.get_full_name }}
+                                            ({{ item.username }})
+                                        {% else %}
+                                            {{ item.username }}
+                                        {% endif %}
+
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="col-12 col-md-6">
+
+                            <label
+                                for="wsusTaskPriority"
+                                class="form-label"
+                            >
+                                Criticidade
+                            </label>
+
+                            <select
+                                id="wsusTaskPriority"
+                                name="priority"
+                                class="form-select"
+                                required
+                            >
+
+                                {% for value, label in priority_choices %}
+
+                                    <option value="{{ value }}">
+                                        {{ label }}
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="col-12 col-md-6">
+
+                            <label
+                                for="wsusTaskStatus"
+                                class="form-label"
+                            >
+                                Status
+                            </label>
+
+                            <select
+                                id="wsusTaskStatus"
+                                name="status"
+                                class="form-select"
+                                required
+                            >
+
+                                {% for value, label in task_status_choices %}
+
+                                    <option value="{{ value }}">
+                                        {{ label }}
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="col-12 col-md-6">
+
+                            <label
+                                for="wsusTaskStartAt"
+                                class="form-label"
+                            >
+                                Início previsto
+                            </label>
+
+                            <input
+                                id="wsusTaskStartAt"
+                                name="planned_start_at"
+                                type="datetime-local"
+                                class="form-control"
+                            >
+
+                        </div>
+
+
+                        <div class="col-12 col-md-6">
+
+                            <label
+                                for="wsusTaskEndAt"
+                                class="form-label"
+                            >
+                                Fim previsto
+                            </label>
+
+                            <input
+                                id="wsusTaskEndAt"
+                                name="planned_end_at"
+                                type="datetime-local"
+                                class="form-control"
+                            >
+
+                        </div>
+
+
+                        <div class="col-12 col-md-6">
+
+                            <label class="form-label d-block">
+                                Reboot
+                            </label>
+
+                            <div
+                                class="
+                                    form-check
+                                    form-switch
+                                    wsus-reboot-switch
+                                "
+                            >
+
+                                <input
+                                    id="wsusTaskAllowReboot"
+                                    name="allow_reboot"
+                                    class="form-check-input"
+                                    type="checkbox"
+                                >
+
+                                <label
+                                    class="form-check-label"
+                                    for="wsusTaskAllowReboot"
+                                >
+                                    Reboot permitido nesta atividade
+                                </label>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-12">
+
+                            <label
+                                for="wsusTaskNotes"
+                                class="form-label"
+                            >
+                                Observações
+                            </label>
+
+                            <textarea
+                                id="wsusTaskNotes"
+                                name="notes"
+                                class="form-control"
+                                rows="4"
+                                placeholder="Informe janela, dependências, orientações ou observações..."
+                            ></textarea>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal"
+                    >
+                        Cancelar
+                    </button>
+
+                    <button
+                        id="wsusTaskSubmitButton"
+                        type="submit"
+                        class="btn btn-info fw-bold"
+                    >
+                        Salvar atividade
+                    </button>
+
+                </div>
+
+
+            </form>
+
+        </div>
+
+    </div>
+</div>

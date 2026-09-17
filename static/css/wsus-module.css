@@ -1,86 +1,36 @@
 .wsus-page-header {
-
     display: flex;
-
-    justify-content:
-        space-between;
-
-    align-items:
-        flex-end;
-
-    gap:
-        20px;
-
-    margin-bottom:
-        22px;
-
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px;
+    margin-bottom: 22px;
 }
-
 
 .wsus-eyebrow {
-
-    margin-bottom:
-        4px;
-
-    color:
-        #37a9ff;
-
-    font-size:
-        10px;
-
-    font-weight:
-        900;
-
-    letter-spacing:
-        0.07rem;
-
-    text-transform:
-        uppercase;
-
+    margin-bottom: 4px;
+    color: #37a9ff;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.07rem;
+    text-transform: uppercase;
 }
-
 
 .wsus-page-title {
-
-    margin:
-        0;
-
-    color:
-        #ffffff;
-
-    font-size:
-        28px;
-
-    font-weight:
-        900;
-
+    margin: 0;
+    color: #ffffff;
+    font-size: 28px;
+    font-weight: 900;
 }
-
 
 .wsus-page-subtitle {
-
-    margin-top:
-        4px;
-
-    margin-bottom:
-        0;
-
-    color:
-        #718ca1;
-
-    font-size:
-        12px;
-
+    margin-top: 4px;
+    margin-bottom: 0;
+    color: #718ca1;
+    font-size: 12px;
 }
 
-
-/* KPIs */
-
 .wsus-kpi-grid {
-
-    display:
-        grid;
-
+    display: grid;
     grid-template-columns:
         repeat(
             5,
@@ -89,23 +39,14 @@
                 1fr
             )
         );
-
-    gap:
-        10px;
-
-    margin-bottom:
-        18px;
-
+    gap: 10px;
+    margin-bottom: 18px;
 }
 
-
 .wsus-kpi {
-
-    padding:
-        14px;
+    padding: 14px;
 
     background:
-
         linear-gradient(
             145deg,
             #0d273a 0%,
@@ -118,291 +59,114 @@
 
     border-radius:
         11px;
-
 }
-
 
 .wsus-kpi-label {
-
-    color:
-        #64849b;
-
-    font-size:
-        9px;
-
-    font-weight:
-        900;
-
-    text-transform:
-        uppercase;
-
+    color: #64849b;
+    font-size: 9px;
+    font-weight: 900;
+    text-transform: uppercase;
 }
-
 
 .wsus-kpi-value {
-
-    margin-top:
-        7px;
-
-    color:
-        #ffffff;
-
-    font-size:
-        24px;
-
-    font-weight:
-        900;
-
-    line-height:
-        1;
-
+    margin-top: 7px;
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 900;
+    line-height: 1;
 }
-
-
-/* FILTROS */
 
 .wsus-filter-panel {
-
-    margin-bottom:
-        18px;
-
-    padding:
-        14px;
-
-    background:
-        #091b2b;
-
-    border:
-        1px solid
-        #21445c;
-
-    border-radius:
-        11px;
-
+    margin-bottom: 18px;
+    padding: 14px;
+    background: #091b2b;
+    border: 1px solid #21445c;
+    border-radius: 11px;
 }
-
-
-/* TABELA */
 
 .wsus-table-panel {
-
-    overflow:
-        hidden;
-
-    background:
-        #091b2b;
-
-    border:
-        1px solid
-        #21445c;
-
-    border-radius:
-        11px;
-
+    overflow: hidden;
+    background: #091b2b;
+    border: 1px solid #21445c;
+    border-radius: 11px;
 }
-
-
-/* BOARD */
 
 .wsus-board-wrapper {
-
-    width:
-        100%;
-
-    overflow-x:
-        auto;
-
-    overflow-y:
-        hidden;
-
-    padding-bottom:
-        14px;
-
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 14px;
 }
-
 
 .wsus-board {
-
-    display:
-        flex;
-
-    align-items:
-        flex-start;
-
-    gap:
-        14px;
-
-    width:
-        max-content;
-
-    min-width:
-        100%;
-
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    width: max-content;
+    min-width: 100%;
 }
-
 
 .wsus-column {
-
-    flex:
-        0
-        0
-        305px;
-
-    width:
-        305px;
-
-    max-width:
-        305px;
-
-    overflow:
-        hidden;
-
-    background:
-        #071725;
-
-    border:
-        1px solid
-        #1f4158;
-
-    border-radius:
-        12px;
-
+    flex: 0 0 305px;
+    width: 305px;
+    max-width: 305px;
+    overflow: hidden;
+    background: #071725;
+    border: 1px solid #1f4158;
+    border-radius: 12px;
 }
-
 
 .wsus-column-header {
-
-    display:
-        flex;
-
-    justify-content:
-        space-between;
-
-    align-items:
-        flex-start;
-
-    gap:
-        10px;
-
-    min-height:
-        74px;
-
-    padding:
-        13px;
-
-    background:
-        #0d2638;
-
-    border-bottom:
-        1px solid
-        #1f4158;
-
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    min-height: 74px;
+    padding: 13px;
+    background: #0d2638;
+    border-bottom: 1px solid #1f4158;
 }
-
 
 .wsus-column-title {
-
-    color:
-        #eef6fb;
-
-    font-size:
-        12px;
-
-    font-weight:
-        900;
-
-    text-transform:
-        uppercase;
-
+    color: #eef6fb;
+    font-size: 12px;
+    font-weight: 900;
+    text-transform: uppercase;
 }
-
 
 .wsus-column-description {
-
-    margin-top:
-        3px;
-
-    color:
-        #68859a;
-
-    font-size:
-        10px;
-
+    margin-top: 3px;
+    color: #68859a;
+    font-size: 10px;
 }
-
 
 .wsus-column-count {
-
-    min-width:
-        27px;
-
-    height:
-        27px;
-
-    display:
-        inline-flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        center;
-
-    padding:
-        0
-        7px;
-
-    color:
-        #d1dce5;
-
-    background:
-        #06131e;
-
-    border:
-        1px solid
-        #2a4b63;
-
-    border-radius:
-        20px;
-
-    font-size:
-        11px;
-
-    font-weight:
-        900;
-
+    min-width: 27px;
+    height: 27px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 7px;
+    color: #d1dce5;
+    background: #06131e;
+    border: 1px solid #2a4b63;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 900;
 }
-
 
 .wsus-column-body {
-
-    min-height:
-        160px;
-
-    display:
-        flex;
-
-    flex-direction:
-        column;
-
-    gap:
-        10px;
-
-    padding:
-        10px;
-
+    min-height: 160px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
 }
 
-
-/* CARD */
-
 .wsus-task-card {
-
-    padding:
-        13px;
+    padding: 13px;
 
     background:
-
         linear-gradient(
             145deg,
             #102a40 0%,
@@ -418,168 +182,142 @@
 
     border-radius:
         9px;
-
 }
-
 
 .wsus-task-card.priority-p0 {
-
-    border-left-color:
-        #ff465d;
-
+    border-left-color: #ff465d;
 }
-
 
 .wsus-task-card.priority-p1 {
-
-    border-left-color:
-        #ffb629;
-
+    border-left-color: #ffb629;
 }
-
 
 .wsus-task-card.priority-p2 {
-
-    border-left-color:
-        #10c6e8;
-
+    border-left-color: #10c6e8;
 }
-
 
 .wsus-task-hostname {
-
-    margin-top:
-        9px;
-
-    color:
-        #ffffff;
-
-    font-size:
-        14px;
-
-    font-weight:
-        800;
-
+    margin-top: 9px;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 800;
 }
-
 
 .wsus-task-ip {
-
-    margin-top:
-        2px;
-
-    color:
-        #708ca0;
-
-    font-size:
-        10px;
-
+    margin-top: 2px;
+    color: #708ca0;
+    font-size: 10px;
 }
 
-
 .wsus-task-info {
-
-    display:
-        grid;
-
+    display: grid;
     grid-template-columns:
         1fr
         1fr;
-
-    gap:
-        8px;
-
-    margin-top:
-        12px;
-
+    gap: 8px;
+    margin-top: 12px;
 }
-
 
 .wsus-task-block {
-
-    margin-top:
-        11px;
-
+    margin-top: 11px;
 }
-
 
 .wsus-task-label {
-
-    color:
-        #5f7e94;
-
-    font-size:
-        8px;
-
-    font-weight:
-        900;
-
-    letter-spacing:
-        0.04rem;
-
-    text-transform:
-        uppercase;
-
+    color: #5f7e94;
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: 0.04rem;
+    text-transform: uppercase;
 }
-
 
 .wsus-task-value {
-
-    margin-top:
-        3px;
-
-    color:
-        #dce8f0;
-
-    font-size:
-        11px;
-
-    font-weight:
-        700;
-
+    margin-top: 3px;
+    color: #dce8f0;
+    font-size: 11px;
+    font-weight: 700;
 }
 
+.wsus-task-notes {
+    margin-top: 4px;
+    color: #92a7b7;
+    font-size: 10px;
+    line-height: 1.45;
+}
+
+.wsus-task-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 13px;
+    padding-top: 11px;
+    border-top: 1px solid #213c52;
+}
 
 .wsus-empty {
-
-    min-height:
-        80px;
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        center;
-
-    color:
-        #58778e;
-
-    border:
-        1px dashed
-        #28465b;
-
-    border-radius:
-        8px;
-
-    font-size:
-        10px;
-
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #58778e;
+    border: 1px dashed #28465b;
+    border-radius: 8px;
+    font-size: 10px;
 }
 
+.wsus-task-modal {
+    color: #eaf2f9;
 
-/* RESPONSIVO */
+    background:
+        linear-gradient(
+            155deg,
+            #10263b 0%,
+            #081725 100%
+        );
+
+    border:
+        1px solid
+        #294a63;
+
+    border-radius:
+        14px;
+}
+
+.wsus-task-modal
+.modal-header,
+
+.wsus-task-modal
+.modal-footer {
+    border-color: #203e58;
+}
+
+.wsus-modal-eyebrow {
+    color: #37a9ff;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 0.07rem;
+    text-transform: uppercase;
+}
+
+.wsus-modal-computer {
+    margin-top: 4px;
+    color: #7892a7;
+    font-size: 11px;
+}
+
+.wsus-reboot-switch {
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
 @media (
     max-width:
     991.98px
 ) {
 
-
     .wsus-kpi-grid {
-
         grid-template-columns:
             repeat(
                 2,
@@ -588,40 +326,24 @@
                     1fr
                 )
             );
-
     }
 
 }
-
 
 @media (
     max-width:
     767.98px
 ) {
 
-
     .wsus-page-header {
-
-        align-items:
-            flex-start;
-
-        flex-direction:
-            column;
-
+        align-items: flex-start;
+        flex-direction: column;
     }
 
-
     .wsus-column {
-
-        flex-basis:
-            280px;
-
-        width:
-            280px;
-
-        max-width:
-            280px;
-
+        flex-basis: 280px;
+        width: 280px;
+        max-width: 280px;
     }
 
 }
