@@ -1,941 +1,872 @@
 {% load static %}
-
 <!doctype html>
 <html lang="pt-BR" data-bs-theme="dark">
-
 <head>
-
-  <meta charset="utf-8">
-
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <title>
-    {% block title %}
-    Infrastructure Action Center
-    {% endblock %}
-  </title>
-
-  <link rel="icon" type="image/png" href="{% static 'img/logo-armazem.png' %}">
-
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <link href="{% static 'css/app.css' %}?v=8" rel="stylesheet">
-
-  {% block extra_head %}
-  {% endblock %}
-
-  <script src="https://unpkg.com/htmx.org@2.0.4"></script>
-
-
-  <style>
-    .app-navbar {
-      min-height: 68px;
-
-      background:
-        rgba(5,
-          15,
-          27,
-          0.97);
-
-      border-bottom:
-        1px solid #20384d !important;
-
-      backdrop-filter:
-        blur(10px);
-    }
-
-
-    .navbar-brand-container {
-
-      display: flex;
-
-      align-items: center;
-
-      gap: 14px;
-
-      margin-right: 26px;
-
-      text-decoration: none;
-
-    }
-
-
-    .navbar-logo {
-
-      display: block;
-
-      width: auto;
-
-      height: 42px;
-
-      object-fit: contain;
-
-    }
-
-
-    .navbar-project-name {
-
-      color: #f1f5f9;
-
-      font-size: 17px;
-
-      font-weight: 800;
-
-      letter-spacing: -0.2px;
-
-      white-space: nowrap;
-
-    }
-
-
-    .navbar-brand-container:hover .navbar-project-name {
-
-      color: #ffffff;
-
-    }
-
-
-    .navbar-nav {
-
-      align-items: center;
-
-    }
-
-
-    .navbar-nav .nav-link,
-    .navbar-nav .dropdown-toggle {
-
-      color: #a8b6c5;
-
-      font-size: 14px;
-
-      font-weight: 500;
-
-      padding:
-        9px 13px !important;
-
-      border-radius: 7px;
-
-      transition:
-        color 0.15s ease,
-        background 0.15s ease;
-
-    }
-
-
-    .navbar-nav .nav-link:hover,
-    .navbar-nav .dropdown-toggle:hover,
-    .navbar-nav .nav-link.active,
-    .navbar-nav .dropdown-toggle.active {
-
-      color: #ffffff;
-
-      background:
-        rgba(31,
-          75,
-          103,
-          0.34);
-
-    }
-
-
-    /* ===============================
-           DROPDOWN
-           =============================== */
-
-
-    .iac-dropdown-menu {
-
-      min-width: 270px;
-
-      margin-top:
-        9px !important;
-
-      padding: 8px;
-
-      background:
-        #071724;
-
-      border:
-        1px solid #24455d;
-
-      border-radius:
-        10px;
-
-      box-shadow:
-        0 14px 35px rgba(0,
-          0,
-          0,
-          0.28);
-
-    }
-
-
-    .iac-dropdown-header {
-
-      padding:
-        8px 10px 5px;
-
-      color:
-        #5f7e95;
-
-      font-size:
-        9px;
-
-      font-weight:
-        900;
-
-      letter-spacing:
-        0.07rem;
-
-      text-transform:
-        uppercase;
-
-    }
-
-
-    .iac-dropdown-menu .dropdown-divider {
-
-      border-color:
-        #1c394e;
-
-      margin:
-        5px 0 7px;
-
-    }
-
-
-    .iac-dropdown-menu .dropdown-item {
-
-      display: flex;
-
-      align-items: center;
-
-      gap: 10px;
-
-      padding:
-        10px;
-
-      color:
-        #b3c3d0;
-
-      border-radius:
-        7px;
-
-      font-size:
-        13px;
-
-    }
-
-
-    .iac-dropdown-menu .dropdown-item:hover,
-
-    .iac-dropdown-menu .dropdown-item:focus,
-
-    .iac-dropdown-menu .dropdown-item.active {
-
-      color:
-        #ffffff;
-
-      background:
-        #102b40;
-
-    }
-
-
-    .iac-menu-icon {
-
-      width: 30px;
-
-      height: 30px;
-
-      display:
-        inline-flex;
-
-      align-items:
-        center;
-
-      justify-content:
-        center;
-
-      flex:
-        0 0 30px;
-
-      color:
-        #12cce8;
-
-      background:
-        #0c2739;
-
-      border:
-        1px solid #24506b;
-
-      border-radius:
-        7px;
-
-      font-size:
-        9px;
-
-      font-weight:
-        900;
-
-    }
-
-
-    .iac-dropdown-text {
-
-      display:
-        flex;
-
-      flex-direction:
-        column;
-
-      line-height:
-        1.2;
-
-    }
-
-
-    .iac-dropdown-title {
-
-      color:
-        inherit;
-
-      font-weight:
-        700;
-
-    }
-
-
-    .iac-dropdown-subtitle {
-
-      margin-top:
-        3px;
-
-      color:
-        #658197;
-
-      font-size:
-        10px;
-
-      font-weight:
-        400;
-
-    }
-
-
-    .navbar-user {
-
-      color:
-        #71869a;
-
-      font-size:
-        13px;
-
-      white-space:
-        nowrap;
-
-    }
-
-
-    /* ===============================
-           MOBILE
-           =============================== */
-
-
-    @media (max-width: 991.98px) {
-
-
-      .app-navbar {
-
-        padding-top:
-          10px;
-
-        padding-bottom:
-          10px;
-
-      }
-
-
-      .navbar-logo {
-
-        height:
-          38px;
-
-      }
-
-
-      .navbar-project-name {
-
-        font-size:
-          15px;
-
-      }
-
-
-      .navbar-collapse {
-
-        margin-top:
-          14px;
-
-        padding-top:
-          12px;
-
-        border-top:
-          1px solid #20384d;
-
-      }
-
-
-      .navbar-nav {
-
-        align-items:
-          stretch;
-
-      }
-
-
-      .navbar-nav .nav-link,
-      .navbar-nav .dropdown-toggle {
-
-        padding-left:
-          8px !important;
-
-      }
-
-
-      .iac-dropdown-menu {
-
-        margin-top:
-          2px !important;
-
-        margin-left:
-          8px;
-
-        margin-right:
-          8px;
-
-        box-shadow:
-          none;
-
-      }
-
-
-      .navbar-user-area {
-
-        margin-top:
-          14px;
-
-        padding-top:
-          14px;
-
-        border-top:
-          1px solid #20384d;
-
-      }
-
-    }
-
-
-    @media (max-width: 575.98px) {
-
-
-      .navbar-logo {
-
-        height:
-          34px;
-
-      }
-
-
-      .navbar-project-name {
-
-        font-size:
-          13px;
-
-      }
-
-
-      .navbar-brand-container {
-
-        gap:
-          9px;
-
-      }
-
-    }
-  </style>
-
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>
+        {% block title %}Infrastructure Action Center{% endblock %}
+    </title>
+
+    <link rel="icon" type="image/png" href="{% static 'img/logo-armazem.png' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{% static 'css/app.css' %}?v=11" rel="stylesheet">
+
+    {% block extra_head %}{% endblock %}
+
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+
+    <style>
+        /* =========================================================
+           NAVBAR
+           ========================================================= */
+        .app-navbar {
+            min-height: 64px;
+            background: rgba(5, 15, 27, 0.98);
+            border-bottom: 1px solid #20384d !important;
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar-brand-container {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-right: 26px;
+            text-decoration: none;
+        }
+
+        .navbar-logo {
+            display: block;
+            width: auto;
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .navbar-home-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            height: 40px;
+            border: 1px solid #24455d;
+            border-radius: 8px;
+            background: rgba(31, 75, 103, 0.22);
+            transition:
+                background 0.15s ease,
+                border-color 0.15s ease,
+                box-shadow 0.15s ease,
+                transform 0.15s ease;
+        }
+
+        .navbar-home-icon {
+            width: 22px;
+            height: 22px;
+            color: #f1f5f9;
+        }
+
+        .navbar-brand-container:hover .navbar-home-badge {
+            background: rgba(31, 75, 103, 0.36);
+            border-color: #2d607e;
+            box-shadow: 0 0 14px rgba(14, 207, 242, 0.14);
+            transform: translateY(-1px);
+        }
+
+        .navbar-brand-container:hover .navbar-home-icon {
+            color: #ffffff;
+        }
+
+        .navbar-nav {
+            align-items: center;
+        }
+
+        .navbar-nav .nav-link,
+        .navbar-nav .dropdown-toggle {
+            color: #a8b6c5;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 9px 13px !important;
+            border-radius: 7px;
+            transition: color 0.15s ease, background 0.15s ease;
+        }
+
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .dropdown-toggle:hover,
+        .navbar-nav .nav-link.active,
+        .navbar-nav .dropdown-toggle.active {
+            color: #ffffff;
+            background: rgba(31, 75, 103, 0.34);
+        }
+
+        /* =========================================================
+           DROPDOWNS PADRAO
+           ========================================================= */
+        .iac-dropdown-menu {
+            min-width: 270px;
+            margin-top: 9px !important;
+            padding: 8px;
+            background: #071724;
+            border: 1px solid #24455d;
+            border-radius: 10px;
+            box-shadow: 0 14px 35px rgba(0, 0, 0, 0.28);
+        }
+
+        .iac-dropdown-header {
+            padding: 8px 10px 5px;
+            color: #5f7e95;
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: 0.07rem;
+            text-transform: uppercase;
+        }
+
+        .iac-dropdown-menu .dropdown-divider {
+            border-color: #1c394e;
+            margin: 5px 0 7px;
+        }
+
+        .iac-dropdown-menu .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            color: #b3c3d0;
+            border-radius: 7px;
+            font-size: 13px;
+        }
+
+        .iac-dropdown-menu .dropdown-item:hover,
+        .iac-dropdown-menu .dropdown-item:focus,
+        .iac-dropdown-menu .dropdown-item.active {
+            color: #ffffff;
+            background: #102b40;
+        }
+
+        /*
+         * Padrao novo dos menus:
+         * todos os antigos quadrados com iniciais foram substituidos
+         * pela mesma bolinha ciano utilizada no menu Infraestrutura.
+         */
+        .iac-menu-bullet {
+            width: 7px;
+            height: 7px;
+            flex: 0 0 7px;
+            background: #0ecff2;
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(14, 207, 242, 0.28);
+        }
+
+        .iac-dropdown-text {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            line-height: 1.2;
+        }
+
+        .iac-dropdown-title {
+            color: inherit;
+            font-weight: 700;
+        }
+
+        .iac-dropdown-subtitle {
+            margin-top: 3px;
+            color: #658197;
+            font-size: 10px;
+            font-weight: 400;
+        }
+
+        .iac-project-menu {
+            min-width: 300px;
+        }
+
+        /* =========================================================
+           INFRAESTRUTURA - MENU HIERARQUICO
+           ========================================================= */
+        .iac-infrastructure-menu {
+            width: 360px;
+            max-height: calc(100vh - 95px);
+            overflow-y: auto;
+            padding: 8px;
+        }
+
+        .iac-infra-accordion {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .iac-infra-category {
+            overflow: hidden;
+            background: #091c2a;
+            border: 1px solid #193a50;
+            border-radius: 8px;
+        }
+
+        .iac-infra-category-button {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 11px;
+            color: #b8c9d5;
+            background: transparent;
+            border: 0;
+            outline: 0;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        .iac-infra-category-button:hover,
+        .iac-infra-category-button:focus {
+            color: #ffffff;
+            background: #102b40;
+        }
+
+        .iac-infra-category-button[aria-expanded="true"] {
+            color: #ffffff;
+            background: #0e2a3f;
+        }
+
+        .iac-infra-category-name {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            min-width: 0;
+        }
+
+        .iac-infra-category-mark {
+            width: 7px;
+            height: 7px;
+            flex: 0 0 7px;
+            background: #0ecff2;
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(14, 207, 242, 0.28);
+        }
+
+        .iac-infra-category-caret {
+            flex: 0 0 auto;
+            color: #4f7f9f;
+            font-size: 19px;
+            font-weight: 400;
+            line-height: 1;
+            transform: rotate(0deg);
+            transition: transform 0.18s ease;
+        }
+
+        .iac-infra-category-button[aria-expanded="true"] .iac-infra-category-caret {
+            transform: rotate(90deg);
+            color: #0ecff2;
+        }
+
+        .iac-infra-options {
+            padding: 5px 7px 8px 26px;
+            border-top: 1px solid #15374c;
+            background: #071823;
+        }
+
+        .iac-infra-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            padding: 8px 9px;
+            color: #9fb5c5;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 12px;
+            line-height: 1.25;
+            transition: color 0.15s ease, background 0.15s ease;
+        }
+
+        .iac-infra-option:hover,
+        .iac-infra-option:focus {
+            color: #ffffff;
+            background: #102b40;
+        }
+
+        .iac-infra-option-bullet {
+            width: 5px;
+            height: 5px;
+            flex: 0 0 5px;
+            background: #287fa8;
+            border-radius: 50%;
+        }
+
+        /* =========================================================
+           USUARIO
+           ========================================================= */
+        .navbar-user {
+            color: #71869a;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        /* =========================================================
+           RESPONSIVO
+           ========================================================= */
+        @media (max-width: 991.98px) {
+            .app-navbar {
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+
+            .navbar-logo {
+                height: 38px;
+            }
+
+            .navbar-home-badge {
+                width: 52px;
+                height: 38px;
+            }
+
+
+            .navbar-collapse {
+                margin-top: 14px;
+                padding-top: 12px;
+                border-top: 1px solid #20384d;
+            }
+
+            .navbar-nav {
+                align-items: stretch;
+            }
+
+            .navbar-nav .nav-link,
+            .navbar-nav .dropdown-toggle {
+                padding-left: 8px !important;
+            }
+
+            .iac-dropdown-menu {
+                margin-top: 2px !important;
+                margin-left: 8px;
+                margin-right: 8px;
+                box-shadow: none;
+            }
+
+            .iac-infrastructure-menu {
+                width: auto;
+                max-height: 60vh;
+            }
+
+            .navbar-user-area {
+                margin-top: 14px;
+                padding-top: 14px;
+                border-top: 1px solid #20384d;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .navbar-logo {
+                height: 34px;
+            }
+
+            .navbar-home-badge {
+                width: 48px;
+                height: 34px;
+            }
+
+            .navbar-home-icon {
+                width: 20px;
+                height: 20px;
+            }
+
+
+            .navbar-brand-container {
+                gap: 9px;
+            }
+        }
+    </style>
 </head>
 
-
 <body>
-
-
-  <nav class="
-        navbar
-        navbar-expand-lg
-        app-navbar
-        sticky-top
-    ">
-
+<nav class="navbar navbar-expand-lg app-navbar sticky-top">
     <div class="container-fluid px-3">
-
-
-      <a class="navbar-brand-container" href="{% url 'dashboard:home' %}">
-
-        <img src="{% static 'img/logo-armazem.png' %}" alt="Armazém Cloud" class="navbar-logo">
-
-        <span class="navbar-project-name">
-          INFRASTRUCTURE ACTION CENTER
-        </span>
-
-      </a>
-
-
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
-        aria-controls="mainNav" aria-expanded="false" aria-label="Abrir menu">
-
-        <span class="navbar-toggler-icon"></span>
-
-      </button>
-
-
-      <div id="mainNav" class="collapse navbar-collapse">
-
-
-        <ul class="navbar-nav me-auto">
-
-
-          <!-- =====================
-                     DASHBOARD
-                     ===================== -->
-
-          <li class="nav-item">
-
-            <a class="
-                            nav-link
-                            {% if request.resolver_match.namespace == 'dashboard' %}
-                                active
-                            {% endif %}
-                        " href="{% url 'dashboard:home' %}">
-              Dashboard
-            </a>
-
-          </li>
-
-
-
-          <!-- =====================
-                     KASPERSKY
-                     ===================== -->
-
-          <li class="nav-item dropdown">
-
-
-            <a class="
-                            nav-link
-                            dropdown-toggle
-
-                            {% if request.resolver_match.namespace == 'inventory' or request.resolver_match.namespace == 'actionplan' %}
-                                active
-                            {% endif %}
-                        " href="#" id="kasperskyMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-
-              Kaspersky
-
-            </a>
-
-
-            <ul class="
-                            dropdown-menu
-                            iac-dropdown-menu
-                        " aria-labelledby="kasperskyMenu">
-
-
-              <li class="iac-dropdown-header">
-
-                Kaspersky Security Center
-
-              </li>
-
-
-              <li>
-
-                <hr class="dropdown-divider">
-
-              </li>
-
-
-              <!-- ENDPOINTS -->
-
-              <li>
-
-
-                <a class="
-                                    dropdown-item
-
-                                    {% if request.resolver_match.namespace == 'inventory' %}
-                                        active
-                                    {% endif %}
-                                " href="{% url 'inventory:list' %}">
-
-
-                  <span class="iac-menu-icon">
-
-                    EP
-
-                  </span>
-
-
-                  <span class="iac-dropdown-text">
-
-
-                    <span class="iac-dropdown-title">
-
-                      Endpoints
-
-                    </span>
-
-
-                    <span class="iac-dropdown-subtitle">
-
-                      Inventário e status de proteção
-
-                    </span>
-
-
-                  </span>
-
-
-                </a>
-
-
-              </li>
-
-
-
-              <!-- ATIVIDADES KASPERSKY -->
-
-              <li>
-
-
-                <a class="
-                                    dropdown-item
-
-                                    {% if request.resolver_match.namespace == 'actionplan' %}
-                                        active
-                                    {% endif %}
-                                " href="{% url 'actionplan:board' %}">
-
-
-                  <span class="iac-menu-icon">
-
-                    AT
-
-                  </span>
-
-
-                  <span class="iac-dropdown-text">
-
-
-                    <span class="iac-dropdown-title">
-
-                      Atividades
-
-                    </span>
-
-
-                    <span class="iac-dropdown-subtitle">
-
-                      Cards, responsáveis e remediação
-
-                    </span>
-
-
-                  </span>
-
-
-                </a>
-
-
-              </li>
-
-
+        <a class="navbar-brand-container" href="{% url 'dashboard:home' %}" aria-label="Início">
+            <img src="{% static 'img/logo-armazem.png' %}" alt="Armazém Cloud" class="navbar-logo">
+            <span class="navbar-home-badge" aria-hidden="true">
+                <svg class="navbar-home-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 10.5L12 4L20 10.5V19C20 19.5523 19.5523 20 19 20H14V14H10V20H5C4.44772 20 4 19.5523 4 19V10.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                    <path d="M8.5 20V14H15.5V20" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                </svg>
+            </span>
+            <span class="visually-hidden">Início</span>
+        </a>
+
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#mainNav"
+            aria-controls="mainNav"
+            aria-expanded="false"
+            aria-label="Abrir menu"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div id="mainNav" class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <!-- DASHBOARD -->
+                <li class="nav-item">
+                    <a
+                        class="nav-link {% if request.resolver_match.namespace == 'dashboard' %}active{% endif %}"
+                        href="{% url 'dashboard:home' %}"
+                    >
+                        Dashboard
+                    </a>
+                </li>
+
+                <!-- KASPERSKY -->
+                <li class="nav-item dropdown">
+                    <a
+                        class="nav-link dropdown-toggle {% if request.resolver_match.namespace == 'inventory' or request.resolver_match.namespace == 'actionplan' %}active{% endif %}"
+                        href="#"
+                        id="kasperskyMenu"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                    >
+                        Kaspersky
+                    </a>
+
+                    <ul class="dropdown-menu iac-dropdown-menu" aria-labelledby="kasperskyMenu">
+                        <li class="iac-dropdown-header">Kaspersky Security Center</li>
+                        <li><hr class="dropdown-divider"></li>
+
+                        <li>
+                            <a
+                                class="dropdown-item {% if request.resolver_match.namespace == 'inventory' %}active{% endif %}"
+                                href="{% url 'inventory:list' %}"
+                            >
+                                <span class="iac-menu-bullet" aria-hidden="true"></span>
+                                <span class="iac-dropdown-text">
+                                    <span class="iac-dropdown-title">Endpoints</span>
+                                    <span class="iac-dropdown-subtitle">Inventário e status de proteção</span>
+                                </span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a
+                                class="dropdown-item {% if request.resolver_match.namespace == 'actionplan' %}active{% endif %}"
+                                href="{% url 'actionplan:board' %}"
+                            >
+                                <span class="iac-menu-bullet" aria-hidden="true"></span>
+                                <span class="iac-dropdown-text">
+                                    <span class="iac-dropdown-title">Atividades</span>
+                                    <span class="iac-dropdown-subtitle">Cards, responsáveis e remediação</span>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- WSUS -->
+                <li class="nav-item dropdown">
+                    <a
+                        class="nav-link dropdown-toggle {% if request.resolver_match.namespace == 'wsus' %}active{% endif %}"
+                        href="#"
+                        id="wsusMenu"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                    >
+                        WSUS
+                    </a>
+
+                    <ul class="dropdown-menu iac-dropdown-menu" aria-labelledby="wsusMenu">
+                        <li class="iac-dropdown-header">Windows Server Update Services</li>
+                        <li><hr class="dropdown-divider"></li>
+
+                        <li>
+                            <a
+                                class="dropdown-item {% if request.resolver_match.namespace == 'wsus' and request.resolver_match.url_name == 'computers' %}active{% endif %}"
+                                href="{% url 'wsus:computers' %}"
+                            >
+                                <span class="iac-menu-bullet" aria-hidden="true"></span>
+                                <span class="iac-dropdown-text">
+                                    <span class="iac-dropdown-title">Computadores</span>
+                                    <span class="iac-dropdown-subtitle">Inventário e conformidade de updates</span>
+                                </span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a
+                                class="dropdown-item {% if request.resolver_match.namespace == 'wsus' and request.resolver_match.url_name == 'activities' %}active{% endif %}"
+                                href="{% url 'wsus:activities' %}"
+                            >
+                                <span class="iac-menu-bullet" aria-hidden="true"></span>
+                                <span class="iac-dropdown-text">
+                                    <span class="iac-dropdown-title">Atividades</span>
+                                    <span class="iac-dropdown-subtitle">Cards de execução das atualizações</span>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- PROJETOS -->
+                <li class="nav-item dropdown">
+                    <a
+                        class="nav-link dropdown-toggle {% if request.resolver_match.namespace == 'projects' %}active{% endif %}"
+                        href="#"
+                        id="projectsMenu"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                    >
+                        Projetos
+                    </a>
+
+                    <ul class="dropdown-menu iac-dropdown-menu iac-project-menu" aria-labelledby="projectsMenu">
+                        <li class="iac-dropdown-header">Gestão de Projetos</li>
+                        <li><hr class="dropdown-divider"></li>
+
+                        <li>
+                            <a
+                                class="dropdown-item {% if request.resolver_match.namespace == 'projects' and request.resolver_match.url_name == 'in_progress' %}active{% endif %}"
+                                href="#"
+                            >
+                                <span class="iac-menu-bullet" aria-hidden="true"></span>
+                                <span class="iac-dropdown-text">
+                                    <span class="iac-dropdown-title">Em andamento</span>
+                                    <span class="iac-dropdown-subtitle">Projetos atualmente em execução</span>
+                                </span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a
+                                class="dropdown-item {% if request.resolver_match.namespace == 'projects' and request.resolver_match.url_name == 'planned' %}active{% endif %}"
+                                href="#"
+                            >
+                                <span class="iac-menu-bullet" aria-hidden="true"></span>
+                                <span class="iac-dropdown-text">
+                                    <span class="iac-dropdown-title">Planejados</span>
+                                    <span class="iac-dropdown-subtitle">Backlog e projetos futuros</span>
+                                </span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a
+                                class="dropdown-item {% if request.resolver_match.namespace == 'projects' and request.resolver_match.url_name == 'completed' %}active{% endif %}"
+                                href="#"
+                            >
+                                <span class="iac-menu-bullet" aria-hidden="true"></span>
+                                <span class="iac-dropdown-text">
+                                    <span class="iac-dropdown-title">Concluídos</span>
+                                    <span class="iac-dropdown-subtitle">Projetos finalizados</span>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- INFRAESTRUTURA -->
+                <li class="nav-item dropdown">
+                    <a
+                        class="nav-link dropdown-toggle {% if request.resolver_match.namespace == 'infrastructure' %}active{% endif %}"
+                        href="#"
+                        id="infrastructureMenu"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                        data-bs-auto-close="outside"
+                        aria-expanded="false"
+                    >
+                        Infraestrutura
+                    </a>
+
+                    <div
+                        class="dropdown-menu iac-dropdown-menu iac-infrastructure-menu"
+                        aria-labelledby="infrastructureMenu"
+                    >
+                        <div class="iac-dropdown-header">Infrastructure Inventory</div>
+                        <hr class="dropdown-divider">
+
+                        <div class="iac-infra-accordion" id="infrastructureAccordion">
+                            <!-- COMPUTACAO -->
+                            <div class="iac-infra-category">
+                                <button
+                                    class="iac-infra-category-button"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#infraComputacao"
+                                    aria-expanded="false"
+                                    aria-controls="infraComputacao"
+                                >
+                                    <span class="iac-infra-category-name">
+                                        <span class="iac-infra-category-mark"></span>
+                                        Computação
+                                    </span>
+                                    <span class="iac-infra-category-caret">›</span>
+                                </button>
+
+                                <div id="infraComputacao" class="collapse" data-bs-parent="#infrastructureAccordion">
+                                    <div class="iac-infra-options">
+                                        <a class="iac-infra-option" href="#">
+                                            <span class="iac-infra-option-bullet"></span>
+                                            Ambiente Cloud
+                                        </a>
+                                        <a class="iac-infra-option" href="#">
+                                            <span class="iac-infra-option-bullet"></span>
+                                            Servidores Físicos
+                                        </a>
+                                        <a class="iac-infra-option" href="#">
+                                            <span class="iac-infra-option-bullet"></span>
+                                            Estações de Trabalho
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- REDE -->
+                            <div class="iac-infra-category">
+                                <button
+                                    class="iac-infra-category-button"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#infraRede"
+                                    aria-expanded="false"
+                                    aria-controls="infraRede"
+                                >
+                                    <span class="iac-infra-category-name">
+                                        <span class="iac-infra-category-mark"></span>
+                                        Rede
+                                    </span>
+                                    <span class="iac-infra-category-caret">›</span>
+                                </button>
+
+                                <div id="infraRede" class="collapse" data-bs-parent="#infrastructureAccordion">
+                                    <div class="iac-infra-options">
+                                        <a class="iac-infra-option" href="#">
+                                            <span class="iac-infra-option-bullet"></span>
+                                            Switches e Roteadores
+                                        </a>
+                                        <a class="iac-infra-option" href="#">
+                                            <span class="iac-infra-option-bullet"></span>
+                                            Wi-Fi / Access Points
+                                        </a>
+                                        <a class="iac-infra-option" href="#">
+                                            <span class="iac-infra-option-bullet"></span>
+                                            Firewalls
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- SEGURANCA FISICA -->
+                            <div class="iac-infra-category">
+                                <button
+                                    class="iac-infra-category-button"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#infraSegurancaFisica"
+                                    aria-expanded="false"
+                                    aria-controls="infraSegurancaFisica"
+                                >
+                                    <span class="iac-infra-category-name">
+                                        <span class="iac-infra-category-mark"></span>
+                                        Segurança Física
+                                    </span>
+                                    <span class="iac-infra-category-caret">›</span>
+                                </button>
+
+                                <div id="infraSegurancaFisica" class="collapse" data-bs-parent="#infrastructureAccordion">
+                                    <div class="iac-infra-options">
+                                        <a class="iac-infra-option" href="#">
+                                            <span class="iac-infra-option-bullet"></span>
+                                            Câmeras
+                                        </a>
+                                        <a class="iac-infra-option" href="#">
+                                            <span class="iac-infra-option-bullet"></span>
+                                            Gravadores NVR/DVR
+                                        </a>
+                                        <a class="iac-infra-option" href="#">
+                                            <span class="iac-infra-option-bullet"></span>
+                                            Controle de Acesso
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- PERIFERICOS E SALAS -->
+                            <div class="iac-infra-category">
+                                <button
+                                    class="iac-infra-category-button"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#infraPerifericos"
+                                    aria-expanded="false"
+                                    aria-controls="infraPerifericos"
+                                >
+                                    <span class="iac-infra-category-name">
+                                        <span class="iac-infra-category-mark"></span>
+                                        Periféricos e Salas
+                                    </span>
+                                    <span class="iac-infra-category-caret">›</span>
+                                </button>
+
+                                <div id="infraPerifericos" class="collapse" data-bs-parent="#infrastructureAccordion">
+                                    <div class="iac-infra-options">
+                                        <a class="iac-infra-option" href="#">
+                                            <span class="iac-infra-option-bullet"></span>
+                                            Impressoras
+                                        </a>
+                                        <a class="iac-infra-option" href="#">
+                                            <span class="iac-infra-option-bullet"></span>
+                                            Projetores
+                                        </a>
+                                        <a class="iac-infra-option" href="#">
+                                            <span class="iac-infra-option-bullet"></span>
+                                            TVs / Painéis
+                                        </a>
+                                        <a class="iac-infra-option" href="#">
+                                            <span class="iac-infra-option-bullet"></span>
+                                            Lousas Interativas
+                                        </a>
+                                        <a class="iac-infra-option" href="#">
+                                            <span class="iac-infra-option-bullet"></span>
+                                            Equipamentos de Laboratório
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- COMUNICACAO -->
+                            <div class="iac-infra-category">
+                                <button
+                                    class="iac-infra-category-button"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#infraComunicacao"
+                                    aria-expanded="false"
+                                    aria-controls="infraComunicacao"
+                                >
+                                    <span class="iac-infra-category-name">
+                                        <span class="iac-infra-category-mark"></span>
+                                        Comunicação
+                                    </span>
+                                    <span class="iac-infra-category-caret">›</span>
+                                </button>
+
+                                <div id="infraComunicacao" class="collapse" data-bs-parent="#infrastructureAccordion">
+                                    <div class="iac-infra-options">
+                                        <a class="iac-infra-option" href="#">
+                                            <span class="iac-infra-option-bullet"></span>
+                                            Telefonia / VoIP
+                                        </a>
+                                        <a class="iac-infra-option" href="#">
+                                            <span class="iac-infra-option-bullet"></span>
+                                            Interfones
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ENERGIA -->
+                            <div class="iac-infra-category">
+                                <button
+                                    class="iac-infra-category-button"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#infraEnergia"
+                                    aria-expanded="false"
+                                    aria-controls="infraEnergia"
+                                >
+                                    <span class="iac-infra-category-name">
+                                        <span class="iac-infra-category-mark"></span>
+                                        Energia
+                                    </span>
+                                    <span class="iac-infra-category-caret">›</span>
+                                </button>
+
+                                <div id="infraEnergia" class="collapse" data-bs-parent="#infrastructureAccordion">
+                                    <div class="iac-infra-options">
+                                        <a class="iac-infra-option" href="#">
+                                            <span class="iac-infra-option-bullet"></span>
+                                            Nobreaks
+                                        </a>
+                                        <a class="iac-infra-option" href="#">
+                                            <span class="iac-infra-option-bullet"></span>
+                                            PDUs
+                                        </a>
+                                        <a class="iac-infra-option" href="#">
+                                            <span class="iac-infra-option-bullet"></span>
+                                            Geradores
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- OUTROS -->
+                            <div class="iac-infra-category">
+                                <button
+                                    class="iac-infra-category-button"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#infraOutros"
+                                    aria-expanded="false"
+                                    aria-controls="infraOutros"
+                                >
+                                    <span class="iac-infra-category-name">
+                                        <span class="iac-infra-category-mark"></span>
+                                        Outros
+                                    </span>
+                                    <span class="iac-infra-category-caret">›</span>
+                                </button>
+
+                                <div id="infraOutros" class="collapse" data-bs-parent="#infrastructureAccordion">
+                                    <div class="iac-infra-options">
+                                        <a class="iac-infra-option" href="#">
+                                            <span class="iac-infra-option-bullet"></span>
+                                            Outros Equipamentos
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
+                <!-- ADMINISTRACAO -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/">Administração</a>
+                </li>
             </ul>
 
-
-          </li>
-
-
-
-          <!-- =====================
-                     WSUS
-                     ===================== -->
-
-          <li class="nav-item dropdown">
-
-
-            <a class="
-                            nav-link
-                            dropdown-toggle
-
-                            {% if request.resolver_match.namespace == 'wsus' %}
-                                active
-                            {% endif %}
-                        " href="#" id="wsusMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-
-              WSUS
-
-            </a>
-
-
-            <ul class="
-                            dropdown-menu
-                            iac-dropdown-menu
-                        " aria-labelledby="wsusMenu">
-
-
-              <li class="iac-dropdown-header">
-
-                Windows Server Update Services
-
-              </li>
-
-
-              <li>
-
-                <hr class="dropdown-divider">
-
-              </li>
-
-
-
-              <!-- COMPUTADORES -->
-
-              <li>
-
-
-                <a class="
-                                    dropdown-item
-
-                                    {% if request.resolver_match.namespace == 'wsus' and request.resolver_match.url_name == 'computers' %}
-                                        active
-                                    {% endif %}
-                                " href="{% url 'wsus:computers' %}">
-
-
-                  <span class="iac-menu-icon">
-
-                    PC
-
-                  </span>
-
-
-                  <span class="iac-dropdown-text">
-
-
-                    <span class="iac-dropdown-title">
-
-                      Computadores
-
-                    </span>
-
-
-                    <span class="iac-dropdown-subtitle">
-
-                      Inventário e conformidade de updates
-
-                    </span>
-
-
-                  </span>
-
-
-                </a>
-
-
-              </li>
-
-
-
-              <!-- ATIVIDADES WSUS -->
-
-              <li>
-
-
-                <a class="
-                                    dropdown-item
-
-                                    {% if request.resolver_match.namespace == 'wsus' and request.resolver_match.url_name == 'activities' %}
-                                        active
-                                    {% endif %}
-                                " href="{% url 'wsus:activities' %}">
-
-
-                  <span class="iac-menu-icon">
-
-                    AT
-
-                  </span>
-
-
-                  <span class="iac-dropdown-text">
-
-
-                    <span class="iac-dropdown-title">
-
-                      Atividades
-
-                    </span>
-
-
-                    <span class="iac-dropdown-subtitle">
-
-                      Cards de execução das atualizações
-
-                    </span>
-
-
-                  </span>
-
-
-                </a>
-
-
-              </li>
-
-
-            </ul>
-
-
-          </li>
-
-
-
-          <!-- =====================
-                     ADMIN
-                     ===================== -->
-
-          <li class="nav-item">
-
-
-            <a class="nav-link" href="/admin/">
-
-              Administração
-
-            </a>
-
-
-          </li>
-
-
-        </ul>
-
-
-
-        {% if user.is_authenticated %}
-
-
-        <div class="
-                        navbar-user-area
-                        d-flex
-                        align-items-center
-                        gap-3
-                    ">
-
-
-          <span class="navbar-user">
-
-            {{ user.username }}
-
-          </span>
-
-
-          <form method="post" action="{% url 'logout' %}" class="m-0">
-
-
-            {% csrf_token %}
-
-
-            <button type="submit" class="
-                                btn
-                                btn-sm
-                                btn-outline-secondary
-                            ">
-
-              Sair
-
-            </button>
-
-
-          </form>
-
-
+            {% if user.is_authenticated %}
+                <div class="navbar-user-area d-flex align-items-center gap-3">
+                    <span class="navbar-user">{{ user.username }}</span>
+                    <form method="post" action="{% url 'logout' %}" class="m-0">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">Sair</button>
+                    </form>
+                </div>
+            {% endif %}
         </div>
-
-
-        {% endif %}
-
-
-      </div>
-
-
     </div>
+</nav>
 
-
-  </nav>
-
-
-
-  <main class="
-        container-fluid
-        px-3
-        px-lg-4
-        py-4
-    ">
-
-
+<main class="container-fluid px-3 px-lg-4 py-4">
     {% if messages %}
-
-
-    {% for message in messages %}
-
-
-    <div class="
-                    alert
-                    alert-{{ message.tags|default:'info' }}
-                ">
-
-      {{ message }}
-
-    </div>
-
-
-    {% endfor %}
-
-
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags|default:'info' }}">
+                {{ message }}
+            </div>
+        {% endfor %}
     {% endif %}
 
+    {% block content %}{% endblock %}
+</main>
 
-    {% block content %}
-    {% endblock %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 
-
-  </main>
-
-
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-
-
-  {% block scripts %}
-  {% endblock %}
-
-
+{% block scripts %}{% endblock %}
 </body>
-
 </html>
